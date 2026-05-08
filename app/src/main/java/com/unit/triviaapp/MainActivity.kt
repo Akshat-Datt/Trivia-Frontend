@@ -1,11 +1,14 @@
 package com.unit.triviaapp
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Response
 
@@ -17,7 +20,11 @@ class MainActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.btnLoad)
 
+        val recyclerView = findViewById<RecyclerView>(R.id.rvItems)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
         button.setOnClickListener {
+            Log.d("Trivia", "Button clicked")
             RetrofitInstance.api.getQuestions().enqueue(object : retrofit2.Callback<List<Question>> {
                 override fun onResponse(
                     call: Call<List<Question>?>,
@@ -25,7 +32,13 @@ class MainActivity : AppCompatActivity() {
                 ) {
                     if(response.isSuccessful){
                         val questions = response.body()
+
                         println(questions)
+
+                        if(questions != null){
+                            val adapter = QuestionAdapter(questions)
+                            recyclerView.adapter = adapter
+                        }
                     }
                 }
 
