@@ -1,8 +1,10 @@
 package com.unit.triviaapp
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -12,9 +14,11 @@ class QuestionAdapter(
 
     class QuestionViewholder(view: View): RecyclerView.ViewHolder(view){
         val textQuestion: TextView
+        val optionsContainer: LinearLayout
 
         init {
             textQuestion = view.findViewById<TextView>(R.id.tvQuestion)
+            optionsContainer = view.findViewById<LinearLayout>(R.id.llOptionsContainer)
         }
     }
 
@@ -32,6 +36,14 @@ class QuestionAdapter(
         position: Int
     ) {
         holder.textQuestion.text = questions[position].question
+
+        holder.optionsContainer.removeAllViews()
+
+        for( option in questions[position].options){
+            val textView = TextView(holder.itemView.context)
+            textView.text = option
+            holder.optionsContainer.addView(textView)
+        }
     }
 
     override fun getItemCount() = questions.size
