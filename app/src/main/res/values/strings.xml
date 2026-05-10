@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TriviaApp</string>
+    <string name="play_trivia">PLAY</string>
+    <string name="next_question">NEXT</string>
 </resources>
