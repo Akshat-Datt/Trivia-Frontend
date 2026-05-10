@@ -20,9 +20,6 @@ class MainActivity : AppCompatActivity() {
 
         val button = findViewById<Button>(R.id.btnLoad)
 
-        val recyclerView = findViewById<RecyclerView>(R.id.rvItems)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
         button.setOnClickListener {
             Log.d("Trivia", "Button clicked")
             RetrofitInstance.api.getQuestions().enqueue(object : retrofit2.Callback<List<Question>> {
@@ -36,8 +33,7 @@ class MainActivity : AppCompatActivity() {
                         println(questions)
 
                         if(questions != null){
-                            val adapter = QuestionAdapter(questions)
-                            recyclerView.adapter = adapter
+
                         }
                     }
                 }
