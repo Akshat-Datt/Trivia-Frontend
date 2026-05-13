@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.RadioButton
+import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -20,12 +21,21 @@ class QuizActivity: AppCompatActivity() {
         val questions = intent.getParcelableArrayListExtra("QUESTIONS_LIST", Question::class.java)
 
         val textView = findViewById<TextView>(R.id.tvQuestion)
-        val optionsContainer = findViewById<LinearLayout>(R.id.llOptionsContainer)
+        val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
 
         val button = findViewById<Button>(R.id.btnNextQuestion)
 
+        button.isEnabled = false
+
+        optionsContainer.setOnCheckedChangeListener { _, checkedId ->
+           if(checkedId != -1){
+               button.isEnabled = true
+           }
+        }
+
         button.setOnClickListener {
             currentQuestionIndex++
+            button.isEnabled = false
             if(questions != null) populateQuestion(textView, optionsContainer, questions)
         }
 
@@ -33,15 +43,15 @@ class QuizActivity: AppCompatActivity() {
 
     }
 
-    private fun populateQuestion(textView: TextView, layout: LinearLayout, questions: ArrayList<Question>){
+    private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questions: ArrayList<Question>){
             textView.text = questions[currentQuestionIndex].question
 
-            layout.removeAllViews()
+            radioGroup.removeAllViews()
 
             for(option in questions[currentQuestionIndex].options){
                 val radioButton = RadioButton(this)
                 radioButton.text = option
-                layout.addView(radioButton)
+                radioGroup.addView(radioButton)
             }
     }
 }
