@@ -1,19 +1,21 @@
 package com.unit.triviaapp
 
 import android.os.Bundle
+import android.os.Debug
 import android.util.Log
 import android.widget.Button
-import android.widget.LinearLayout
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import org.w3c.dom.Text
+import kotlin.math.log
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
     private var questionsAnswersMap = hashMapOf<Int, Int>()
+
+    private lateinit var button: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +27,7 @@ class QuizActivity: AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
 
-        val button = findViewById<Button>(R.id.btnNextQuestion)
+        button = findViewById<Button>(R.id.btnNextQuestion)
 
         button.isEnabled = false
 
@@ -44,10 +46,17 @@ class QuizActivity: AppCompatActivity() {
         }
 
         button.setOnClickListener {
-            currentQuestionIndex++
             button.isEnabled = false
+
             if(questions != null) {
-                populateQuestion(textView, optionsContainer, questions)
+                if (currentQuestionIndex == questions.size - 1) {
+                    sendQuestions()
+                }
+
+                if (currentQuestionIndex < questions.size - 1) {
+                    currentQuestionIndex++
+                    populateQuestion(textView, optionsContainer, questions)
+                }
             }
         }
 
@@ -56,6 +65,8 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questions: ArrayList<Question>){
+            if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
+
             textView.text = questions[currentQuestionIndex].question
 
             radioGroup.removeAllViews()
@@ -66,5 +77,9 @@ class QuizActivity: AppCompatActivity() {
                 radioButton.tag = index
                 radioGroup.addView(radioButton)
             }
+    }
+
+    private fun sendQuestions(){
+        Log.d("Trivia","send questions called")
     }
 }
