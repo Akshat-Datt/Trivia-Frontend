@@ -1,7 +1,6 @@
 package com.unit.triviaapp
 
 import android.os.Bundle
-import android.os.Debug
 import android.util.Log
 import android.widget.Button
 import android.widget.RadioButton
@@ -9,7 +8,6 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import kotlin.math.log
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
