@@ -1,7 +1,7 @@
 package com.unit.triviaapp.network
 
 import com.unit.triviaapp.models.Question
-import com.unit.triviaapp.models.QuizSubmissionsResponse
+import com.unit.triviaapp.models.QuizResultResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
 import retrofit2.Call
 import retrofit2.http.Body
@@ -14,5 +14,5 @@ interface ApiService {
     fun getQuestions(): Call<List<Question>>
 
     @POST("submit/questions")
-    fun submitQuestions(@Body submitQuizRequest: SubmitQuizRequest): Call<QuizSubmissionsResponse>
+    fun submitQuestions(@Body request: SubmitQuizRequest): Call<QuizResultResponse>
 }

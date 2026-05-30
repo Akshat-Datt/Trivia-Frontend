@@ -1,6 +1,6 @@
 package com.unit.triviaapp.models
 
-data class QuizSubmissionsResponse (
+data class QuizResultResponse (
     val score: Int,
     val total_questions: Int,
     val accuracy: Float

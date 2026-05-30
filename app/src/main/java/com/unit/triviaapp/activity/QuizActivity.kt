@@ -11,7 +11,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.R
 import com.unit.triviaapp.models.Question
-import com.unit.triviaapp.models.QuizSubmissionsResponse
+import com.unit.triviaapp.models.QuizResultResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.RetrofitInstance
 import retrofit2.Call
@@ -93,11 +93,11 @@ class QuizActivity: AppCompatActivity() {
             answers = questionsAnswersMap
         )
 
-        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : Callback<QuizSubmissionsResponse> {
+        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : Callback<QuizResultResponse> {
 
             override fun onResponse(
-                call: Call<QuizSubmissionsResponse?>,
-                response: Response<QuizSubmissionsResponse?>
+                call: Call<QuizResultResponse?>,
+                response: Response<QuizResultResponse?>
             ) {
                 if(response.isSuccessful){
                     val scoreResponse = response.body()
@@ -110,7 +110,7 @@ class QuizActivity: AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<QuizSubmissionsResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<QuizResultResponse?>, t: Throwable) {
                 println("Error: ${t.message}")
             }
         })
