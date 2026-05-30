@@ -1,5 +1,6 @@
 package com.unit.triviaapp
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizSubmissionsResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
 import retrofit2.Call
@@ -97,7 +99,11 @@ class QuizActivity: AppCompatActivity() {
                 if(response.isSuccessful){
                     val scoreResponse = response.body()
 
-                    println(scoreResponse)
+                    val resultIntent = Intent(this@QuizActivity, ResultActivity::class.java)
+                    resultIntent.putExtra("score", scoreResponse?.score)
+                    resultIntent.putExtra("totalQuestions", scoreResponse?.total_questions)
+                    resultIntent.putExtra("accuracy", scoreResponse?.accuracy)
+                    startActivity(resultIntent)
                 }
             }
 

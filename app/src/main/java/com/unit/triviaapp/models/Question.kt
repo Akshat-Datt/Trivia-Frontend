@@ -1,4 +1,4 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

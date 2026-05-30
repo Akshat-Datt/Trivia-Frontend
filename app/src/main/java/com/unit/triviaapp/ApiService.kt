@@ -1,5 +1,6 @@
 package com.unit.triviaapp
 
+import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizSubmissionsResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
 import retrofit2.Call

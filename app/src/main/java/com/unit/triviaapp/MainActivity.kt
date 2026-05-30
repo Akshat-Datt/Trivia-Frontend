@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.models.Question
 import retrofit2.Call
 import retrofit2.Response
 
