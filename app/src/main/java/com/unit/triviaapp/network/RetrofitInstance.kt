@@ -1,4 +1,4 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.network
 
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

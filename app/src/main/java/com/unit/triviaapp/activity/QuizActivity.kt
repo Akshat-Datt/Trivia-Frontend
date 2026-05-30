@@ -1,4 +1,4 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -9,10 +9,13 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.R
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizSubmissionsResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
+import com.unit.triviaapp.network.RetrofitInstance
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 class QuizActivity: AppCompatActivity() {
@@ -90,7 +93,7 @@ class QuizActivity: AppCompatActivity() {
             answers = questionsAnswersMap
         )
 
-        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : retrofit2.Callback<QuizSubmissionsResponse> {
+        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : Callback<QuizSubmissionsResponse> {
 
             override fun onResponse(
                 call: Call<QuizSubmissionsResponse?>,

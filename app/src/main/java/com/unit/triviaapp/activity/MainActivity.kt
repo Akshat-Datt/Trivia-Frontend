@@ -1,14 +1,16 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.activity
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.R
 import com.unit.triviaapp.models.Question
+import com.unit.triviaapp.network.RetrofitInstance
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
@@ -21,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         button.setOnClickListener {
             Log.d("Trivia", "Button clicked")
-            RetrofitInstance.api.getQuestions().enqueue(object : retrofit2.Callback<List<Question>> {
+            RetrofitInstance.api.getQuestions().enqueue(object : Callback<List<Question>> {
                 override fun onResponse(
                     call: Call<List<Question>?>,
                     response: Response<List<Question>?>

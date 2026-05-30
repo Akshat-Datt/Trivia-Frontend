@@ -1,4 +1,4 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.network
 
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizSubmissionsResponse

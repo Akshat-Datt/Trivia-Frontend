@@ -1,9 +1,10 @@
-package com.unit.triviaapp
+package com.unit.triviaapp.activity
 
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.R
 
 class ResultActivity: AppCompatActivity() {
 
