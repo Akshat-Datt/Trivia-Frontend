@@ -8,6 +8,10 @@ import android.widget.RadioGroup
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import com.unit.triviaapp.models.QuizSubmissionsResponse
+import com.unit.triviaapp.models.SubmitQuizRequest
+import retrofit2.Call
+import retrofit2.Response
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
@@ -79,5 +83,27 @@ class QuizActivity: AppCompatActivity() {
 
     private fun sendQuestions(){
         Log.d("Trivia","send questions called")
+
+        val submitQuiz = SubmitQuizRequest(
+            answers = questionsAnswersMap
+        )
+
+        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : retrofit2.Callback<QuizSubmissionsResponse> {
+
+            override fun onResponse(
+                call: Call<QuizSubmissionsResponse?>,
+                response: Response<QuizSubmissionsResponse?>
+            ) {
+                if(response.isSuccessful){
+                    val scoreResponse = response.body()
+
+                    println(scoreResponse)
+                }
+            }
+
+            override fun onFailure(call: Call<QuizSubmissionsResponse?>, t: Throwable) {
+                println("Error: ${t.message}")
+            }
+        })
     }
 }
