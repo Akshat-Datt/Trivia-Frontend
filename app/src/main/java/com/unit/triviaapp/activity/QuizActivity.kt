@@ -11,16 +11,12 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.R
 import com.unit.triviaapp.models.Question
-import com.unit.triviaapp.models.QuizResultResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
-import com.unit.triviaapp.network.RetrofitInstance
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import com.unit.triviaapp.network.QuizApiManager
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
-    private var questionsAnswersMap = hashMapOf<Int, Int>()
+    private var selectedAnswers = hashMapOf<Int, Int>()
 
     private lateinit var button: Button
 
@@ -29,7 +25,7 @@ class QuizActivity: AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_quiz)
 
-        val questions = intent.getParcelableArrayListExtra("QUESTIONS_LIST", Question::class.java)
+        val questions = intent.getParcelableArrayListExtra("QUESTIONS_LIST", Question::class.java)?: return
 
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
@@ -39,12 +35,12 @@ class QuizActivity: AppCompatActivity() {
         button.isEnabled = false
 
         optionsContainer.setOnCheckedChangeListener { _, checkedId ->
-           if(checkedId != -1 && questions != null){
+           if(checkedId != -1){
                val radioButton = optionsContainer.findViewById<RadioButton>(checkedId)
                val answerIndex = radioButton.tag as Int
                val questionId = questions[currentQuestionIndex].id
 
-               questionsAnswersMap.put(questionId, answerIndex)
+               selectedAnswers[questionId] =  answerIndex
 
                Log.d("Trivia", "Inserted in map with key $questionId and value $answerIndex")
 
@@ -55,19 +51,18 @@ class QuizActivity: AppCompatActivity() {
         button.setOnClickListener {
             button.isEnabled = false
 
-            if(questions != null) {
-                if (currentQuestionIndex == questions.size - 1) {
-                    sendQuestions()
-                }
-
-                if (currentQuestionIndex < questions.size - 1) {
-                    currentQuestionIndex++
-                    populateQuestion(textView, optionsContainer, questions)
-                }
+            if (currentQuestionIndex == questions.size - 1) {
+                sendQuestions()
             }
+
+            if (currentQuestionIndex < questions.size - 1) {
+                currentQuestionIndex++
+                populateQuestion(textView, optionsContainer, questions)
+            }
+
         }
 
-        if(questions != null) populateQuestion(textView, optionsContainer, questions)
+        populateQuestion(textView, optionsContainer, questions)
 
     }
 
@@ -90,29 +85,21 @@ class QuizActivity: AppCompatActivity() {
         Log.d("Trivia","send questions called")
 
         val submitQuiz = SubmitQuizRequest(
-            answers = questionsAnswersMap
+            answers = selectedAnswers
         )
 
-        RetrofitInstance.api.submitQuestions(submitQuiz).enqueue( object : Callback<QuizResultResponse> {
-
-            override fun onResponse(
-                call: Call<QuizResultResponse?>,
-                response: Response<QuizResultResponse?>
-            ) {
-                if(response.isSuccessful){
-                    val scoreResponse = response.body()
-
-                    val resultIntent = Intent(this@QuizActivity, ResultActivity::class.java)
-                    resultIntent.putExtra("score", scoreResponse?.score)
-                    resultIntent.putExtra("totalQuestions", scoreResponse?.total_questions)
-                    resultIntent.putExtra("accuracy", scoreResponse?.accuracy)
-                    startActivity(resultIntent)
-                }
+        QuizApiManager.submitQuiz(
+            submitQuiz,
+            onSuccess = { scoreResponse ->
+                val resultIntent = Intent(this@QuizActivity, ResultActivity::class.java)
+                resultIntent.putExtra("score", scoreResponse?.score)
+                resultIntent.putExtra("totalQuestions", scoreResponse?.total_questions)
+                resultIntent.putExtra("accuracy", scoreResponse?.accuracy)
+                startActivity(resultIntent)
+            },
+            onError = { error ->
+                Log.e("Trivia","Error: $error")
             }
-
-            override fun onFailure(call: Call<QuizResultResponse?>, t: Throwable) {
-                println("Error: ${t.message}")
-            }
-        })
+        )
     }
 }
