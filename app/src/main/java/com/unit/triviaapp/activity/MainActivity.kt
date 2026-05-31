@@ -7,6 +7,7 @@ import android.widget.Button
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.R
+import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.network.QuizApiManager
 
 class MainActivity : AppCompatActivity() {
@@ -24,7 +25,7 @@ class MainActivity : AppCompatActivity() {
                 onSuccess = { questions ->
                     if(questions != null){
                         val questionsIntent = Intent(this@MainActivity, QuizActivity::class.java)
-                        questionsIntent.putParcelableArrayListExtra("QUESTIONS_LIST", ArrayList(questions))
+                        questionsIntent.putParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, ArrayList(questions))
                         startActivity(questionsIntent)
                     }
                 },

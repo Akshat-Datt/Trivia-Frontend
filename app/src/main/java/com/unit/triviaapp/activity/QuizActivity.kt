@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.R
+import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
@@ -25,12 +26,12 @@ class QuizActivity: AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_quiz)
 
-        val questions = intent.getParcelableArrayListExtra("QUESTIONS_LIST", Question::class.java)?: return
+        val questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
 
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
 
-        button = findViewById<Button>(R.id.btnNextQuestion)
+        button = findViewById(R.id.btnNextQuestion)
 
         button.isEnabled = false
 
@@ -92,9 +93,9 @@ class QuizActivity: AppCompatActivity() {
             submitQuiz,
             onSuccess = { scoreResponse ->
                 val resultIntent = Intent(this@QuizActivity, ResultActivity::class.java)
-                resultIntent.putExtra("score", scoreResponse?.score)
-                resultIntent.putExtra("totalQuestions", scoreResponse?.total_questions)
-                resultIntent.putExtra("accuracy", scoreResponse?.accuracy)
+                resultIntent.putExtra(ConstKeys.SCORE, scoreResponse?.score)
+                resultIntent.putExtra(ConstKeys.TOTAL_QUESTIONS, scoreResponse?.total_questions)
+                resultIntent.putExtra(ConstKeys.ACCURACY, scoreResponse?.accuracy)
                 startActivity(resultIntent)
             },
             onError = { error ->
