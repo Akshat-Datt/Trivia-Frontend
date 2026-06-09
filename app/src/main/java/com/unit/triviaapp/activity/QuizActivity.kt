@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
@@ -28,6 +29,8 @@ class QuizActivity: AppCompatActivity() {
 
         val questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
 
+        val questionCounter = findViewById<TextView>(R.id.tvQuestionCounter)
+        val questionProgressBar = findViewById<ProgressBar>(R.id.progressQuiz)
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
 
@@ -58,17 +61,21 @@ class QuizActivity: AppCompatActivity() {
 
             if (currentQuestionIndex < questions.size - 1) {
                 currentQuestionIndex++
-                populateQuestion(textView, optionsContainer, questions)
+                populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
             }
 
         }
 
-        populateQuestion(textView, optionsContainer, questions)
+        populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
 
     }
 
-    private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questions: ArrayList<Question>){
+    private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
             if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
+
+            questionCounter.text = "Question ${currentQuestionIndex + 1} of ${questions.size}"
+
+            progressBar.progress = (currentQuestionIndex + 1) * 100 / questions.size
 
             textView.text = questions[currentQuestionIndex].question
 
