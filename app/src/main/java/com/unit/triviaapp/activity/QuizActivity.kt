@@ -3,6 +3,7 @@ package com.unit.triviaapp.activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ProgressBar
 import android.widget.RadioButton
@@ -21,6 +22,7 @@ class QuizActivity: AppCompatActivity() {
     private var selectedAnswers = hashMapOf<Int, Int>()
 
     private lateinit var button: Button
+    private lateinit var backButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,6 +37,7 @@ class QuizActivity: AppCompatActivity() {
         val optionsContainer = findViewById<RadioGroup>(R.id.rgContainer)
 
         button = findViewById(R.id.btnNextQuestion)
+        backButton = findViewById(R.id.backButton)
 
         button.isEnabled = false
 
@@ -53,6 +56,8 @@ class QuizActivity: AppCompatActivity() {
         }
 
         button.setOnClickListener {
+            backButton.visibility = View.VISIBLE
+
             button.isEnabled = false
 
             if (currentQuestionIndex == questions.size - 1) {
@@ -66,12 +71,26 @@ class QuizActivity: AppCompatActivity() {
 
         }
 
+        backButton.setOnClickListener {
+            if(currentQuestionIndex > 0){
+                currentQuestionIndex--
+                populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
+
+                val answerIndex = selectedAnswers[questions[currentQuestionIndex].id]
+
+                val radioButton = optionsContainer.getChildAt(answerIndex as Int) as RadioButton
+                optionsContainer.check(radioButton.id)
+            }
+        }
+
         populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
 
     }
 
     private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
             if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
+            if(currentQuestionIndex < questions.size -1) button.text = getString(R.string.next_question)
+            if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
 
             questionCounter.text = getString(
                 R.string.question_counter,
@@ -90,6 +109,11 @@ class QuizActivity: AppCompatActivity() {
                 radioButton.text = option
                 radioButton.tag = index
                 radioGroup.addView(radioButton)
+            }
+
+            if(selectedAnswers[questions[currentQuestionIndex].id] != null){
+                val radioButton = radioGroup.getChildAt(selectedAnswers[questions[currentQuestionIndex].id] as Int) as RadioButton
+                radioGroup.check(radioButton.id)
             }
     }
 
