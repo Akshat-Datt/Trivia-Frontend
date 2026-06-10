@@ -73,7 +73,11 @@ class QuizActivity: AppCompatActivity() {
     private fun populateQuestion(textView: TextView, radioGroup: RadioGroup, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
             if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
 
-            questionCounter.text = "Question ${currentQuestionIndex + 1} of ${questions.size}"
+            questionCounter.text = getString(
+                R.string.question_counter,
+                currentQuestionIndex + 1,
+                questions.size
+            )
 
             progressBar.progress = (currentQuestionIndex + 1) * 100 / questions.size
 

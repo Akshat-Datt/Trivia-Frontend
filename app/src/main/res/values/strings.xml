@@ -3,4 +3,5 @@
     <string name="play_trivia">PLAY</string>
     <string name="next_question">NEXT</string>
     <string name="submit_quiz">SUBMIT</string>
+    <string name="question_counter">Question %1$d of %2$d</string>
 </resources>
