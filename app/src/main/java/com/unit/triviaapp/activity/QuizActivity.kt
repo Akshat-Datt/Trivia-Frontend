@@ -12,6 +12,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import com.unit.triviaapp.R
+import com.unit.triviaapp.constants.ConstCardValues
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
@@ -79,13 +80,19 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun selectCard(card: MaterialCardView){
-        card.cardElevation = 8f
-        card.strokeWidth = 5
+        card.cardElevation = ConstCardValues.CARD_ELEVATION_SELECTED
+        card.strokeWidth = ConstCardValues.CARD_STROKE_SELECTED
+        card.setCardBackgroundColor(
+            getColor(R.color.selected)
+        )
     }
 
-    private fun unselectCards(card: MaterialCardView){
-        card.cardElevation = 0f
-        card.strokeWidth = 1
+    private fun unselectCard(card: MaterialCardView){
+        card.cardElevation = ConstCardValues.CARD_ELEVATION_DEFAULT
+        card.strokeWidth = ConstCardValues.CARD_STROKE_DEFAULT
+        card.setCardBackgroundColor(
+            getColor(R.color.unselected)
+        )
     }
 
     private fun populateQuestion(textView: TextView, optionsContainer: LinearLayout, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
@@ -110,7 +117,7 @@ class QuizActivity: AppCompatActivity() {
                 val answerCard = MaterialCardView(this)
                 val answerText = TextView(this)
                 answerText.text = option
-                answerText.textSize = 16f
+                answerText.textSize = ConstCardValues.CARD_TEXT_SIZE
                 answerCard.addView(answerText)
                 answerCard.tag = index
                 answerCard.setContentPadding(
@@ -119,14 +126,13 @@ class QuizActivity: AppCompatActivity() {
                     24,
                     20
                 )
-                answerCard.animate()
-                answerCard.radius = 16f
+                answerCard.radius = ConstCardValues.CARD_RADIUS
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
 
-                params.bottomMargin = 12
+                params.bottomMargin = ConstCardValues.CARD_BOTTOM_MARGIN
                 answerCard.layoutParams = params
                 optionsContainer.addView(answerCard)
 
@@ -134,7 +140,7 @@ class QuizActivity: AppCompatActivity() {
 
                     for(i in 0 until optionsContainer.childCount){
                         val card = optionsContainer.getChildAt(i) as MaterialCardView
-                        unselectCards(card)
+                        unselectCard(card)
                     }
 
                     selectCard(answerCard)
