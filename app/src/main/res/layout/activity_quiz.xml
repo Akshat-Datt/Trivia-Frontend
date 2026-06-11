@@ -49,8 +49,8 @@
 
     </com.google.android.material.card.MaterialCardView>
 
-    <RadioGroup
-        android:id="@+id/rgContainer"
+    <LinearLayout
+        android:id="@+id/llContainer"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/next_question"
-        app:layout_constraintTop_toBottomOf="@id/rgContainer"
+        app:layout_constraintTop_toBottomOf="@id/llContainer"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="24dp"/>
 
@@ -77,6 +77,6 @@
         app:layout_constraintEnd_toStartOf="@+id/btnNextQuestion"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rgContainer" />
+        app:layout_constraintTop_toBottomOf="@+id/llContainer" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
