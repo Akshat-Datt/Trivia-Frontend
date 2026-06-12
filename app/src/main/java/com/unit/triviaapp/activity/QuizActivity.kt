@@ -17,25 +17,40 @@ import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
+import com.unit.triviaapp.utils.QuestionTimer
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
     private var selectedAnswers = hashMapOf<Int, Int>()
-
     private lateinit var button: Button
     private lateinit var backButton: Button
+    private lateinit var questionTimer: QuestionTimer
+    private lateinit var questions: ArrayList<Question>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_quiz)
 
-        val questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
+        questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
 
         val questionCounter = findViewById<TextView>(R.id.tvQuestionCounter)
         val questionProgressBar = findViewById<ProgressBar>(R.id.progressQuiz)
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<LinearLayout>(R.id.llContainer)
+        val timer = findViewById<TextView>(R.id.tvQuestionTimer)
+
+        questionTimer = QuestionTimer(
+            onTick = { millis ->
+                timer.text = millis.toString()
+            },
+            onFinish = {
+                if( selectedAnswers[questions[currentQuestionIndex].id] == null ){
+                    selectedAnswers[questions[currentQuestionIndex].id] = -1
+                }
+                nextQuestion(textView, optionsContainer, questionCounter, questionProgressBar)
+            }
+        )
 
         button = findViewById(R.id.btnNextQuestion)
         backButton = findViewById(R.id.backButton)
@@ -43,19 +58,7 @@ class QuizActivity: AppCompatActivity() {
         button.isEnabled = false
 
         button.setOnClickListener {
-            backButton.visibility = View.VISIBLE
-
-            button.isEnabled = false
-
-            if (currentQuestionIndex == questions.size - 1) {
-                sendQuestions()
-            }
-
-            if (currentQuestionIndex < questions.size - 1) {
-                currentQuestionIndex++
-                populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
-            }
-
+            nextQuestion(textView, optionsContainer, questionCounter, questionProgressBar)
         }
 
         backButton.setOnClickListener {
@@ -71,6 +74,21 @@ class QuizActivity: AppCompatActivity() {
 
         populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
 
+    }
+
+    private fun nextQuestion(textView: TextView, optionsContainer: LinearLayout, questionCounter: TextView, questionProgressBar: ProgressBar){
+        backButton.visibility = View.VISIBLE
+
+        button.isEnabled = false
+
+        if (currentQuestionIndex == questions.size - 1) {
+            sendQuestions()
+        }
+
+        if (currentQuestionIndex < questions.size - 1) {
+            currentQuestionIndex++
+            populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
+        }
     }
 
     private fun restoreSelectedAnswer(selectedAnswer: Int, optionsContainer: LinearLayout){
@@ -96,9 +114,9 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun populateQuestion(textView: TextView, optionsContainer: LinearLayout, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
-        if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
-        if(currentQuestionIndex < questions.size -1) button.text = getString(R.string.next_question)
-        if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
+            if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
+            if(currentQuestionIndex < questions.size -1) button.text = getString(R.string.next_question)
+            if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
             val questionId = questions[currentQuestionIndex].id
 
             questionCounter.text = getString(
@@ -153,6 +171,8 @@ class QuizActivity: AppCompatActivity() {
             if(selectedAnswers[questions[currentQuestionIndex].id] != null){
                 restoreSelectedAnswer(selectedAnswers[questions[currentQuestionIndex].id] as Int, optionsContainer)
             }
+
+            questionTimer.resetTimer()
     }
 
     private fun sendQuestions(){
