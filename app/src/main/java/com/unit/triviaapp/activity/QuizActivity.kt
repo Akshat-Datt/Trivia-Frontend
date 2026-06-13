@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.ProgressBar
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
@@ -18,12 +19,17 @@ import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.utils.QuestionTimer
+import kotlin.collections.set
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex = 0
+    private var remainingTime: Long = 0
     private var selectedAnswers = hashMapOf<Int, Int>()
+    private var questionsRemainingTime = hashMapOf<Int, Long>()
+    private var lockedQuestions = mutableSetOf<Int>()
     private lateinit var button: Button
     private lateinit var backButton: Button
+    private lateinit var timer: TextView
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: ArrayList<Question>
 
@@ -38,19 +44,9 @@ class QuizActivity: AppCompatActivity() {
         val questionProgressBar = findViewById<ProgressBar>(R.id.progressQuiz)
         val textView = findViewById<TextView>(R.id.tvQuestion)
         val optionsContainer = findViewById<LinearLayout>(R.id.llContainer)
-        val timer = findViewById<TextView>(R.id.tvQuestionTimer)
+        timer = findViewById(R.id.tvQuestionTimer)
 
-        questionTimer = QuestionTimer(
-            onTick = { millis ->
-                timer.text = millis.toString()
-            },
-            onFinish = {
-                if( selectedAnswers[questions[currentQuestionIndex].id] == null ){
-                    selectedAnswers[questions[currentQuestionIndex].id] = -1
-                }
-                nextQuestion(textView, optionsContainer, questionCounter, questionProgressBar)
-            }
-        )
+        questionTimer = QuestionTimer()
 
         button = findViewById(R.id.btnNextQuestion)
         backButton = findViewById(R.id.backButton)
@@ -63,12 +59,9 @@ class QuizActivity: AppCompatActivity() {
 
         backButton.setOnClickListener {
             if(currentQuestionIndex > 0){
+                questionsRemainingTime[questions[currentQuestionIndex].id] = remainingTime
                 currentQuestionIndex--
                 populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
-
-                val answerIndex = selectedAnswers[questions[currentQuestionIndex].id]
-
-                restoreSelectedAnswer(answerIndex as Int, optionsContainer)
             }
         }
 
@@ -81,7 +74,11 @@ class QuizActivity: AppCompatActivity() {
 
         button.isEnabled = false
 
+        Log.d("Trivia", "Mapping $remainingTime with questions ${questions[currentQuestionIndex].id}")
+        questionsRemainingTime[questions[currentQuestionIndex].id] = remainingTime
+
         if (currentQuestionIndex == questions.size - 1) {
+            questionTimer.cancelTimer()
             sendQuestions()
         }
 
@@ -92,8 +89,10 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun restoreSelectedAnswer(selectedAnswer: Int, optionsContainer: LinearLayout){
-        val answerCard = optionsContainer.getChildAt(selectedAnswer) as MaterialCardView
-        selectCard(answerCard)
+        if(selectedAnswer != -1) {
+            val answerCard = optionsContainer.getChildAt(selectedAnswer) as MaterialCardView
+            selectCard(answerCard)
+        }
         button.isEnabled = true
     }
 
@@ -156,6 +155,10 @@ class QuizActivity: AppCompatActivity() {
 
                 answerCard.setOnClickListener {
 
+                    if(lockedQuestions.contains(questionId)){
+                        return@setOnClickListener
+                    }
+
                     for(i in 0 until optionsContainer.childCount){
                         val card = optionsContainer.getChildAt(i) as MaterialCardView
                         unselectCard(card)
@@ -168,11 +171,52 @@ class QuizActivity: AppCompatActivity() {
                 }
             }
 
-            if(selectedAnswers[questions[currentQuestionIndex].id] != null){
-                restoreSelectedAnswer(selectedAnswers[questions[currentQuestionIndex].id] as Int, optionsContainer)
+            if(selectedAnswers[questionId] != null){
+                restoreSelectedAnswer(selectedAnswers[questionId] as Int, optionsContainer)
             }
 
-            questionTimer.resetTimer()
+            if(lockedQuestions.contains(questionId)){
+                questionTimer.cancelTimer()
+                timer.text = 0.toString()
+                Toast.makeText(this, "Time Over for this Question", Toast.LENGTH_LONG).show()
+                return
+            }
+
+            else if(questionsRemainingTime[questionId] != null && !lockedQuestions.contains(questionId)){
+                Log.d("Trivia", "remaining time on question ${questionId} is ${questionsRemainingTime[questionId]}")
+
+                questionTimer.resetTimer(questionsRemainingTime[questionId] as Long * 1000,
+                        onTick = { secondsRemaining ->
+                    timer.text = secondsRemaining.toString()
+                    remainingTime = secondsRemaining
+                },
+                    onFinish = {
+                        if( selectedAnswers[questionId] == null ){
+                            selectedAnswers[questionId] = -1
+                        }
+                        lockedQuestions.add(questionId)
+                        nextQuestion(textView, optionsContainer, questionCounter, progressBar)
+                    }
+                )
+            }
+
+            else {
+                questionTimer.resetTimer(15000,
+                    onTick = { secondsRemaining ->
+                        timer.text = secondsRemaining.toString()
+                        remainingTime = secondsRemaining
+                    },
+                    onFinish = {
+                        if( selectedAnswers[questionId] == null ){
+
+                            selectedAnswers[questionId] = -1
+                            Log.d("Trivia", "mapping selected answer ${selectedAnswers[questionId]} to question $questionId")
+                        }
+                        lockedQuestions.add(questionId)
+                        nextQuestion(textView, optionsContainer, questionCounter, progressBar)
+                    }
+                )
+            }
     }
 
     private fun sendQuestions(){
