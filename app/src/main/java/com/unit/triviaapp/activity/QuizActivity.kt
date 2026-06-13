@@ -29,7 +29,11 @@ class QuizActivity: AppCompatActivity() {
     private var lockedQuestions = mutableSetOf<Int>()
     private lateinit var button: Button
     private lateinit var backButton: Button
+    private lateinit var questionText: TextView
     private lateinit var timer: TextView
+    private lateinit var questionCounter: TextView
+    private lateinit var questionProgressBar: ProgressBar
+    private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: ArrayList<Question>
 
@@ -40,42 +44,41 @@ class QuizActivity: AppCompatActivity() {
 
         questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
 
-        val questionCounter = findViewById<TextView>(R.id.tvQuestionCounter)
-        val questionProgressBar = findViewById<ProgressBar>(R.id.progressQuiz)
-        val textView = findViewById<TextView>(R.id.tvQuestion)
-        val optionsContainer = findViewById<LinearLayout>(R.id.llContainer)
+        questionCounter = findViewById(R.id.tvQuestionCounter)
+        questionProgressBar = findViewById(R.id.progressQuiz)
+        questionText = findViewById(R.id.tvQuestion)
+        optionsContainer = findViewById(R.id.llContainer)
         timer = findViewById(R.id.tvQuestionTimer)
-
-        questionTimer = QuestionTimer()
-
         button = findViewById(R.id.btnNextQuestion)
         backButton = findViewById(R.id.backButton)
+
+        questionTimer = QuestionTimer()
 
         button.isEnabled = false
 
         button.setOnClickListener {
-            nextQuestion(textView, optionsContainer, questionCounter, questionProgressBar)
+            nextQuestion()
         }
 
         backButton.setOnClickListener {
             if(currentQuestionIndex > 0){
-                questionsRemainingTime[questions[currentQuestionIndex].id] = remainingTime
+                questionsRemainingTime[questions[currentQuestionIndex].id] = questionTimer.getRemainingTime()
                 currentQuestionIndex--
-                populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
+                populateQuestion()
             }
         }
 
-        populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
+        populateQuestion()
 
     }
 
-    private fun nextQuestion(textView: TextView, optionsContainer: LinearLayout, questionCounter: TextView, questionProgressBar: ProgressBar){
+    private fun nextQuestion(){
         backButton.visibility = View.VISIBLE
 
         button.isEnabled = false
 
         Log.d("Trivia", "Mapping $remainingTime with questions ${questions[currentQuestionIndex].id}")
-        questionsRemainingTime[questions[currentQuestionIndex].id] = remainingTime
+        questionsRemainingTime[questions[currentQuestionIndex].id] = questionTimer.getRemainingTime()
 
         if (currentQuestionIndex == questions.size - 1) {
             questionTimer.cancelTimer()
@@ -84,7 +87,7 @@ class QuizActivity: AppCompatActivity() {
 
         if (currentQuestionIndex < questions.size - 1) {
             currentQuestionIndex++
-            populateQuestion(textView, optionsContainer, questionCounter, questionProgressBar, questions)
+            populateQuestion()
         }
     }
 
@@ -112,9 +115,14 @@ class QuizActivity: AppCompatActivity() {
         )
     }
 
-    private fun populateQuestion(textView: TextView, optionsContainer: LinearLayout, questionCounter: TextView, progressBar: ProgressBar, questions: ArrayList<Question>){
-            if(currentQuestionIndex == questions.size - 1) button.text = getString(R.string.submit_quiz)
-            if(currentQuestionIndex < questions.size -1) button.text = getString(R.string.next_question)
+    private fun populateQuestion(){
+            val lastQuestionIndex = currentQuestionIndex == questions.size - 1
+            button.text = if(lastQuestionIndex){
+                getString(R.string.submit_quiz)
+            }
+            else{
+                getString(R.string.next_question)
+            }
             if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
             val questionId = questions[currentQuestionIndex].id
 
@@ -124,51 +132,14 @@ class QuizActivity: AppCompatActivity() {
                 questions.size
             )
 
-            progressBar.progress = (currentQuestionIndex + 1) * 100 / questions.size
+            questionProgressBar.progress = (currentQuestionIndex + 1) * 100 / questions.size
 
-            textView.text = questions[currentQuestionIndex].question
+            questionText.text = questions[currentQuestionIndex].question
 
             optionsContainer.removeAllViews()
 
             for((index, option) in questions[currentQuestionIndex].options.withIndex()){
-                val answerCard = MaterialCardView(this)
-                val answerText = TextView(this)
-                answerText.text = option
-                answerText.textSize = ConstCardValues.CARD_TEXT_SIZE
-                answerCard.addView(answerText)
-                answerCard.tag = index
-                answerCard.setContentPadding(
-                    24,
-                    20,
-                    24,
-                    20
-                )
-                answerCard.radius = ConstCardValues.CARD_RADIUS
-                val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-                )
-
-                params.bottomMargin = ConstCardValues.CARD_BOTTOM_MARGIN
-                answerCard.layoutParams = params
-                optionsContainer.addView(answerCard)
-
-                answerCard.setOnClickListener {
-
-                    if(lockedQuestions.contains(questionId)){
-                        return@setOnClickListener
-                    }
-
-                    for(i in 0 until optionsContainer.childCount){
-                        val card = optionsContainer.getChildAt(i) as MaterialCardView
-                        unselectCard(card)
-                    }
-
-                    selectCard(answerCard)
-                    val answerIndex = answerCard.tag
-                    selectedAnswers[questionId] = answerIndex as Int
-                    button.isEnabled = true
-                }
+                populateOptionsPerQuestion(index, option, questionId)
             }
 
             if(selectedAnswers[questionId] != null){
@@ -183,40 +154,69 @@ class QuizActivity: AppCompatActivity() {
             }
 
             else if(questionsRemainingTime[questionId] != null && !lockedQuestions.contains(questionId)){
-                Log.d("Trivia", "remaining time on question ${questionId} is ${questionsRemainingTime[questionId]}")
-
-                questionTimer.resetTimer(questionsRemainingTime[questionId] as Long * 1000,
-                        onTick = { secondsRemaining ->
-                    timer.text = secondsRemaining.toString()
-                    remainingTime = secondsRemaining
-                },
-                    onFinish = {
-                        if( selectedAnswers[questionId] == null ){
-                            selectedAnswers[questionId] = -1
-                        }
-                        lockedQuestions.add(questionId)
-                        nextQuestion(textView, optionsContainer, questionCounter, progressBar)
-                    }
-                )
+                val remainingTimeOfQuestion = questionsRemainingTime[questionId] as Long * 1000
+                resetQuestionTimer(remainingTimeOfQuestion, questionId)
             }
 
             else {
-                questionTimer.resetTimer(15000,
-                    onTick = { secondsRemaining ->
-                        timer.text = secondsRemaining.toString()
-                        remainingTime = secondsRemaining
-                    },
-                    onFinish = {
-                        if( selectedAnswers[questionId] == null ){
-
-                            selectedAnswers[questionId] = -1
-                            Log.d("Trivia", "mapping selected answer ${selectedAnswers[questionId]} to question $questionId")
-                        }
-                        lockedQuestions.add(questionId)
-                        nextQuestion(textView, optionsContainer, questionCounter, progressBar)
-                    }
-                )
+                resetQuestionTimer(15000, questionId)
             }
+    }
+
+    private fun populateOptionsPerQuestion(index: Int, option: String, questionId: Int){
+        val answerCard = MaterialCardView(this)
+        val answerText = TextView(this)
+        answerText.text = option
+        answerText.textSize = ConstCardValues.CARD_TEXT_SIZE
+        answerCard.addView(answerText)
+        answerCard.tag = index
+        answerCard.setContentPadding(
+            24,
+            20,
+            24,
+            20
+        )
+        answerCard.radius = ConstCardValues.CARD_RADIUS
+        val params = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        params.bottomMargin = ConstCardValues.CARD_BOTTOM_MARGIN
+        answerCard.layoutParams = params
+        optionsContainer.addView(answerCard)
+
+        answerCard.setOnClickListener {
+
+            if(lockedQuestions.contains(questionId)){
+                return@setOnClickListener
+            }
+
+            for(i in 0 until optionsContainer.childCount){
+                val card = optionsContainer.getChildAt(i) as MaterialCardView
+                unselectCard(card)
+            }
+
+            selectCard(answerCard)
+            val answerIndex = answerCard.tag
+            selectedAnswers[questionId] = answerIndex as Int
+            button.isEnabled = true
+        }
+    }
+
+    private fun resetQuestionTimer(timerValue: Long, questionId: Int){
+        questionTimer.resetTimer(timerValue,
+            onTick = { runningTime ->
+                timer.text = runningTime.toString()
+            },
+            onFinish = {
+                if( selectedAnswers[questionId] == null ){
+                    selectedAnswers[questionId] = -1
+                }
+                lockedQuestions.add(questionId)
+                nextQuestion()
+            }
+        )
     }
 
     private fun sendQuestions(){

@@ -1,11 +1,9 @@
 package com.unit.triviaapp.utils
 
 import android.os.CountDownTimer
-import android.util.Log
 
 class QuestionTimer(){
-    private var defaultMaxTimer: Long = 15000
-
+    private var runningTime: Long = 15000
     private var countDown: CountDownTimer? = null
 
     fun startTimer(remainingTime: Long,
@@ -14,7 +12,8 @@ class QuestionTimer(){
     ){
         countDown = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                onTick(millisUntilFinished/1000)
+                runningTime = millisUntilFinished/1000
+                onTick(runningTime)
             }
 
             override fun onFinish() {
@@ -33,7 +32,10 @@ class QuestionTimer(){
                    onFinish: () -> Unit
     ){
         countDown?.cancel()
-        Log.d("Trivia", "new default max timer $defaultMaxTimer")
         startTimer(remainingTime, onTick, onFinish)
+    }
+
+    fun getRemainingTime(): Long{
+        return runningTime
     }
 }
