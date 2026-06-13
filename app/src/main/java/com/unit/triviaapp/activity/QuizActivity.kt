@@ -18,6 +18,7 @@ import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
+import com.unit.triviaapp.utils.LoadingViewHelper
 import com.unit.triviaapp.utils.QuestionTimer
 import kotlin.collections.set
 
@@ -36,6 +37,7 @@ class QuizActivity: AppCompatActivity() {
     private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: ArrayList<Question>
+    private lateinit var submitLoader: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,7 @@ class QuizActivity: AppCompatActivity() {
         timer = findViewById(R.id.tvQuestionTimer)
         button = findViewById(R.id.btnNextQuestion)
         backButton = findViewById(R.id.backButton)
+        submitLoader = findViewById(R.id.progressLoadingSubmit)
 
         questionTimer = QuestionTimer()
 
@@ -226,6 +229,10 @@ class QuizActivity: AppCompatActivity() {
             answers = selectedAnswers
         )
 
+        button.isEnabled = false
+        LoadingViewHelper.showView(submitLoader)
+        Toast.makeText(this, "Submitting your answers!", Toast.LENGTH_SHORT).show()
+
         QuizApiManager.submitQuiz(
             submitQuiz,
             onSuccess = { scoreResponse ->
@@ -233,6 +240,8 @@ class QuizActivity: AppCompatActivity() {
                 resultIntent.putExtra(ConstKeys.SCORE, scoreResponse?.score)
                 resultIntent.putExtra(ConstKeys.TOTAL_QUESTIONS, scoreResponse?.total_questions)
                 resultIntent.putExtra(ConstKeys.ACCURACY, scoreResponse?.accuracy)
+                button.isEnabled = true
+                LoadingViewHelper.hideView(submitLoader)
                 startActivity(resultIntent)
             },
             onError = { error ->
