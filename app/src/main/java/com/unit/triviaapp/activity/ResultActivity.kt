@@ -2,38 +2,34 @@ package com.unit.triviaapp.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.R
 import com.unit.triviaapp.constants.ConstKeys
+import com.unit.triviaapp.databinding.ActivityResultBinding
 import java.util.Locale
 
 class ResultActivity: AppCompatActivity() {
+    private lateinit var binding: ActivityResultBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_result)
-
-        val score = findViewById<TextView>(R.id.tvScore)
-        val accuracy = findViewById<TextView>(R.id.tvAccuracy)
-        val performance = findViewById<TextView>(R.id.tvPerformance)
-        val btnPlayAgain = findViewById<Button>(R.id.btnPlayAgain)
+        binding = ActivityResultBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         val scoreFetched = intent.getIntExtra(ConstKeys.SCORE, 0)
         val totalQuestionsFetched = intent.getIntExtra(ConstKeys.TOTAL_QUESTIONS, 0)
         val accuracyFetched = intent.getFloatExtra(ConstKeys.ACCURACY, 0.0f)
 
-        score.text = getString(
+        binding.tvScore.text = getString(
             R.string.score,
             scoreFetched,
             totalQuestionsFetched
         )
 
         val roundOffAccuracy = String.format(Locale.getDefault(), "%.2f%%", accuracyFetched)
-        accuracy.text = getString(
+        binding.tvAccuracy.text = getString(
             R.string.accuracy,
             roundOffAccuracy
         )
@@ -46,9 +42,9 @@ class ResultActivity: AppCompatActivity() {
             else -> "Keep Practicing 💪"
         }
 
-        performance.text = performanceMessage
+        binding.tvPerformance.text = performanceMessage
 
-        btnPlayAgain.setOnClickListener {
+        binding.btnPlayAgain.setOnClickListener {
             startActivity(
                 Intent(this, MainActivity::class.java)
             )

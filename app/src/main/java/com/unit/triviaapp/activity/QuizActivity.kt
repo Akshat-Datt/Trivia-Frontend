@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
-import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +14,7 @@ import com.google.android.material.card.MaterialCardView
 import com.unit.triviaapp.R
 import com.unit.triviaapp.constants.ConstCardValues
 import com.unit.triviaapp.constants.ConstKeys
+import com.unit.triviaapp.databinding.ActivityQuizBinding
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
@@ -23,37 +23,28 @@ import com.unit.triviaapp.utils.QuestionTimer
 import kotlin.collections.set
 
 class QuizActivity: AppCompatActivity() {
+    private lateinit var binding: ActivityQuizBinding
     private var currentQuestionIndex = 0
-    private var remainingTime: Long = 0
     private var selectedAnswers = hashMapOf<Int, Int>()
     private var questionsRemainingTime = hashMapOf<Int, Long>()
     private var lockedQuestions = mutableSetOf<Int>()
     private lateinit var button: Button
     private lateinit var backButton: Button
-    private lateinit var questionText: TextView
-    private lateinit var timer: TextView
-    private lateinit var questionCounter: TextView
-    private lateinit var questionProgressBar: ProgressBar
     private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: ArrayList<Question>
-    private lateinit var submitLoader: ProgressBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContentView(R.layout.activity_quiz)
+        binding = ActivityQuizBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
 
-        questionCounter = findViewById(R.id.tvQuestionCounter)
-        questionProgressBar = findViewById(R.id.progressQuiz)
-        questionText = findViewById(R.id.tvQuestion)
-        optionsContainer = findViewById(R.id.llContainer)
-        timer = findViewById(R.id.tvQuestionTimer)
-        button = findViewById(R.id.btnNextQuestion)
-        backButton = findViewById(R.id.backButton)
-        submitLoader = findViewById(R.id.progressLoadingSubmit)
+        optionsContainer = binding.llContainer
+        button = binding.btnNextQuestion
+        backButton = binding.backButton
 
         questionTimer = QuestionTimer()
 
@@ -80,7 +71,6 @@ class QuizActivity: AppCompatActivity() {
 
         button.isEnabled = false
 
-        Log.d("Trivia", "Mapping $remainingTime with questions ${questions[currentQuestionIndex].id}")
         questionsRemainingTime[questions[currentQuestionIndex].id] = questionTimer.getRemainingTime()
 
         if (currentQuestionIndex == questions.size - 1) {
@@ -129,15 +119,15 @@ class QuizActivity: AppCompatActivity() {
             if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
             val questionId = questions[currentQuestionIndex].id
 
-            questionCounter.text = getString(
+            binding.tvQuestionCounter.text = getString(
                 R.string.question_counter,
                 currentQuestionIndex + 1,
                 questions.size
             )
 
-            questionProgressBar.progress = (currentQuestionIndex + 1) * 100 / questions.size
+            binding.progressQuiz.progress = (currentQuestionIndex + 1) * 100 / questions.size
 
-            questionText.text = questions[currentQuestionIndex].question
+            binding.tvQuestion.text = questions[currentQuestionIndex].question
 
             optionsContainer.removeAllViews()
 
@@ -145,13 +135,13 @@ class QuizActivity: AppCompatActivity() {
                 populateOptionsPerQuestion(index, option, questionId)
             }
 
-            if(selectedAnswers[questionId] != null){
-                restoreSelectedAnswer(selectedAnswers[questionId] as Int, optionsContainer)
-            }
+        selectedAnswers[questionId]?.let {
+            restoreSelectedAnswer(it, optionsContainer)
+        }
 
             if(lockedQuestions.contains(questionId)){
                 questionTimer.cancelTimer()
-                timer.text = 0.toString()
+                binding.tvQuestionTimer.text = 0.toString()
                 Toast.makeText(this, "Time Over for this Question", Toast.LENGTH_LONG).show()
                 return
             }
@@ -210,7 +200,7 @@ class QuizActivity: AppCompatActivity() {
     private fun resetQuestionTimer(timerValue: Long, questionId: Int){
         questionTimer.resetTimer(timerValue,
             onTick = { runningTime ->
-                timer.text = runningTime.toString()
+                binding.tvQuestionTimer.text = runningTime.toString()
             },
             onFinish = {
                 if( selectedAnswers[questionId] == null ){
@@ -230,7 +220,7 @@ class QuizActivity: AppCompatActivity() {
         )
 
         button.isEnabled = false
-        LoadingViewHelper.showView(submitLoader)
+        LoadingViewHelper.showView(binding.progressLoadingSubmit)
         Toast.makeText(this, "Submitting your answers!", Toast.LENGTH_SHORT).show()
 
         QuizApiManager.submitQuiz(
@@ -241,11 +231,13 @@ class QuizActivity: AppCompatActivity() {
                 resultIntent.putExtra(ConstKeys.TOTAL_QUESTIONS, scoreResponse?.total_questions)
                 resultIntent.putExtra(ConstKeys.ACCURACY, scoreResponse?.accuracy)
                 button.isEnabled = true
-                LoadingViewHelper.hideView(submitLoader)
+                LoadingViewHelper.hideView(binding.progressLoadingSubmit)
                 startActivity(resultIntent)
             },
             onError = { error ->
                 Log.e("Trivia","Error: $error")
+                button.isEnabled = true
+                LoadingViewHelper.hideView(binding.progressLoadingSubmit)
             }
         )
     }
