@@ -57,7 +57,18 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <Button
+        <TextView
+            android:id="@+id/tvFeatures"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:text="@string/feature_line"
+            android:textColor="#7A7A7A"
+            android:textSize="14sp"/>
+
+
+        <Button
         android:id="@+id/btnLoad"
         android:layout_width="300dp"
         android:layout_height="56dp"
@@ -68,15 +79,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-        <TextView
-            android:id="@+id/tvFeatures"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:gravity="center"
-            android:text="@string/feature_line"
-            android:textColor="#7A7A7A"
-            android:textSize="14sp"/>
 
     <ProgressBar
         android:id="@+id/progressLoadingPlay"

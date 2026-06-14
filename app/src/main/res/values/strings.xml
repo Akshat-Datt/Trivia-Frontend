@@ -2,10 +2,14 @@
     <string name="app_name">Trivia Challenge</string>
     <string name="tagline">Test your knowledge against the clock</string>
     <string name="start_challenge">Start Challenge</string>
-    <string name="play_trivia">PLAY</string>
+    <string name="feature_line">⚡ Timed Questions • 🏆 Challenge Yourself</string>
     <string name="next_question">NEXT</string>
     <string name="submit_quiz">SUBMIT</string>
     <string name="question_counter">Question %1$d of %2$d</string>
     <string name="BackButton">BACK</string>
-    <string name="feature_line">⚡ Timed Questions • 🏆 Challenge Yourself</string>
+    <string name="champ">🏆</string>
+    <string name="quiz_complete">Challenge Complete</string>
+    <string name="score">%1$d / %2$d</string>
+    <string name="accuracy">Accuracy: %1$s</string>
+    <string name="play_again">Play Again</string>
 </resources>
