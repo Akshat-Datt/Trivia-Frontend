@@ -127,7 +127,7 @@ class QuizActivity: AppCompatActivity() {
 
             binding.progressQuiz.progress = (currentQuestionIndex + 1) * 100 / questions.size
 
-            binding.tvQuestion.text = questions[currentQuestionIndex].question
+            binding.tvQuestion.text = questions[currentQuestionIndex].question_text
 
             optionsContainer.removeAllViews()
 
