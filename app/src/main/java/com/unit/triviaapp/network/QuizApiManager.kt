@@ -9,7 +9,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 object QuizApiManager {
-    fun getQuestionsList(
+    fun getDailyQuestionsList(
         onSuccess: (List<Question>?) -> Unit,
         onError: (String) -> Unit
     ){
@@ -32,7 +32,7 @@ object QuizApiManager {
             })
         }
         catch (t: Throwable){
-            Log.e("Trivia", "Submit quiz exception in quiz api manager ${t.message}")
+            Log.e("Trivia", "GetQuestion exception in quiz api manager ${t.message}")
         }
     }
 
