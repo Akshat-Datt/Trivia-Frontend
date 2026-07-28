@@ -17,6 +17,7 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".activity.QuizActivity"/>
         <activity android:name=".activity.ResultActivity"/>
+        <activity android:name=".activity.PlatformActivity"/>
         <activity
             android:name=".activity.MainActivity"
             android:exported="true">

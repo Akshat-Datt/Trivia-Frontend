@@ -8,6 +8,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityMainBinding
+import com.unit.triviaapp.network.PlatformsApiManager
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.utils.LoadingViewHelper
 
@@ -25,7 +26,7 @@ class MainActivity : AppCompatActivity() {
             LoadingViewHelper.showView(binding.progressLoadingPlay)
             binding.btnLoad.isEnabled = false
 
-            QuizApiManager.getQuestionsList(
+            QuizApiManager.getDailyQuestionsList(
                 onSuccess = { questions ->
                     if(questions != null){
                         val questionsIntent = Intent(this@MainActivity, QuizActivity::class.java)
@@ -40,6 +41,24 @@ class MainActivity : AppCompatActivity() {
                     Log.e("Trivia", "Error: $error")
                     LoadingViewHelper.hideView(binding.progressLoadingPlay)
                     binding.btnLoad.isEnabled = true
+                }
+            )
+        }
+
+        binding.btnPlatformsLoad.setOnClickListener{
+            PlatformsApiManager.getPlatformsList(
+                onSuccess = { platforms ->
+                    if(platforms != null){
+                        Log.d("Trivia", "Got Platforms $platforms")
+                        val platformsIntent = Intent(this@MainActivity, PlatformActivity::class.java)
+                        platformsIntent.putParcelableArrayListExtra(ConstKeys.PLATFORMS_LIST,
+                            ArrayList(platforms))
+                        startActivity(platformsIntent)
+                    }
+                },
+
+                onError = { error ->
+                    Log.e("Trivia", "Error: $error")
                 }
             )
         }

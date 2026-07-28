@@ -16,7 +16,7 @@ object PlatformsApiManager {
                 override fun onResponse(
                     call: Call<List<Platforms>?>,
                     response: Response<List<Platforms>?>
-                ) {
+                ){
                     if(response.isSuccessful){
                         val platforms = response.body()
                         onSuccess(platforms)
