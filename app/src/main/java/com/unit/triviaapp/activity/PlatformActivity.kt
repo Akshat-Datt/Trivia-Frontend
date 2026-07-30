@@ -2,6 +2,7 @@ package com.unit.triviaapp.activity
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.enableEdgeToEdge
@@ -11,6 +12,7 @@ import com.unit.triviaapp.constants.ConstCardValues
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityPlatformBinding
 import com.unit.triviaapp.models.Platforms
+import com.unit.triviaapp.network.QuizApiManager
 
 class PlatformActivity: AppCompatActivity(){
     private lateinit var binding: ActivityPlatformBinding
@@ -51,6 +53,19 @@ class PlatformActivity: AppCompatActivity(){
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
+        platformCard.setOnClickListener {
+            QuizApiManager.getEndlessQuestionsList(
+                platform.id,
+                null,
+                null,
+                onSuccess = {endlessQuizResponse ->
+                    Log.d("Trivia", "Endless quiz response $endlessQuizResponse")
+                },
+                onError = {error ->
+                    Log.d("Trivia", "Error while clicking on ${platform.platform_name}")
+                }
+                )
+        }
         params.bottomMargin = ConstCardValues.CARD_BOTTOM_MARGIN
         platformCard.layoutParams = params
         platformsContainer.addView(platformCard)

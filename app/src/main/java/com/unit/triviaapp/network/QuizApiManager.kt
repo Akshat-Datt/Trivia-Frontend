@@ -1,6 +1,7 @@
 package com.unit.triviaapp.network
 
 import android.util.Log
+import com.unit.triviaapp.models.EndlessQuestionResponse
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizResultResponse
 import com.unit.triviaapp.models.SubmitQuizRequest
@@ -33,6 +34,40 @@ object QuizApiManager {
         }
         catch (t: Throwable){
             Log.e("Trivia", "GetQuestion exception in quiz api manager ${t.message}")
+        }
+    }
+
+    fun getEndlessQuestionsList(
+        platformId: Int,
+        page:Int?,
+        limit:Int?,
+        onSuccess: (EndlessQuestionResponse?) -> Unit,
+        onError: (String) -> Unit
+    ){
+        try{
+            RetrofitInstance.api.getEndlessQuiz(platformId, page, limit).enqueue( object : Callback<EndlessQuestionResponse>{
+                override fun onResponse(
+                    call: Call<EndlessQuestionResponse?>,
+                    response: Response<EndlessQuestionResponse?>
+                ) {
+                    if(response.isSuccessful){
+                        val response = response.body()
+
+                        onSuccess(response)
+                    }
+                }
+
+                override fun onFailure(
+                    call: Call<EndlessQuestionResponse?>,
+                    t: Throwable
+                ) {
+                    onError(t.message.toString())
+                }
+
+            })
+        }
+        catch (t: Throwable){
+
         }
     }
 
