@@ -2,7 +2,6 @@ package com.unit.triviaapp.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
-import java.sql.Date
 
 @Parcelize
 data class Question (

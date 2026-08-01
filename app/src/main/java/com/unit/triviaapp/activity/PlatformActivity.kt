@@ -1,6 +1,5 @@
 package com.unit.triviaapp.activity
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
@@ -9,14 +8,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import com.unit.triviaapp.constants.ConstCardValues
-import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityPlatformBinding
 import com.unit.triviaapp.models.Platforms
+import com.unit.triviaapp.network.PlatformsApiManager
 import com.unit.triviaapp.network.QuizApiManager
 
 class PlatformActivity: AppCompatActivity(){
     private lateinit var binding: ActivityPlatformBinding
-    private lateinit var platforms: ArrayList<Platforms>
+    private var fetchedPlatforms: List<Platforms>? = null
     private lateinit var platformsContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,14 +25,25 @@ class PlatformActivity: AppCompatActivity(){
         setContentView(binding.root)
         platformsContainer = binding.llContainer
 
-        platforms = intent.getParcelableArrayListExtra(ConstKeys.PLATFORMS_LIST, Platforms::class.java)?: return
-
-        for(platform in platforms){
-            PopulatePlatforms(platform, platformsContainer)
-        }
+        getPlatformsList()
     }
 
-    private fun PopulatePlatforms(platform: Platforms, platformsContainer: LinearLayout){
+    private fun getPlatformsList(){
+        PlatformsApiManager.getPlatformsList(
+            onSuccess = { platforms ->
+                fetchedPlatforms = platforms
+
+                fetchedPlatforms?.forEach { platform ->
+                    populatePlatforms(platform, platformsContainer)
+                }
+            },
+            onError = {error ->
+                Log.d("Trivia", "Error while fetching platforms list via platforms api manager $error")
+            }
+        )
+    }
+
+    private fun populatePlatforms(platform: Platforms, platformsContainer: LinearLayout){
         val platformCard = MaterialCardView(this)
         val platformText = TextView(this)
 
@@ -62,7 +72,7 @@ class PlatformActivity: AppCompatActivity(){
                     Log.d("Trivia", "Endless quiz response $endlessQuizResponse")
                 },
                 onError = {error ->
-                    Log.d("Trivia", "Error while clicking on ${platform.platform_name}")
+                    Log.d("Trivia", "Error while clicking on ${platform.platform_name} is $error")
                 }
                 )
         }

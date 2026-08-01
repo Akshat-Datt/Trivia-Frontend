@@ -8,7 +8,6 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityMainBinding
-import com.unit.triviaapp.network.PlatformsApiManager
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.utils.LoadingViewHelper
 
@@ -46,21 +45,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.btnPlatformsLoad.setOnClickListener{
-            PlatformsApiManager.getPlatformsList(
-                onSuccess = { platforms ->
-                    if(platforms != null){
-                        Log.d("Trivia", "Got Platforms $platforms")
-                        val platformsIntent = Intent(this@MainActivity, PlatformActivity::class.java)
-                        platformsIntent.putParcelableArrayListExtra(ConstKeys.PLATFORMS_LIST,
-                            ArrayList(platforms))
-                        startActivity(platformsIntent)
-                    }
-                },
-
-                onError = { error ->
-                    Log.e("Trivia", "Error: $error")
-                }
-            )
+            val intent = Intent(this, PlatformActivity::class.java)
+            startActivity(intent)
         }
     }
 }
