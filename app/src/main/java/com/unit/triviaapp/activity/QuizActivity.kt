@@ -15,6 +15,7 @@ import com.unit.triviaapp.R
 import com.unit.triviaapp.constants.ConstCardValues
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityQuizBinding
+import com.unit.triviaapp.enums.QuizMode
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
@@ -32,7 +33,8 @@ class QuizActivity: AppCompatActivity() {
     private lateinit var backButton: Button
     private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
-    private lateinit var questions: ArrayList<Question>
+    private lateinit var questions: List<Question>
+    private lateinit var quizMode: QuizMode
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +42,7 @@ class QuizActivity: AppCompatActivity() {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        questions = intent.getParcelableArrayListExtra(ConstKeys.QUESTIONS_LIST, Question::class.java)?: return
+        quizMode = intent.getSerializableExtra(ConstKeys.DAILY_QUIZ, QuizMode::class.java)?: return
 
         optionsContainer = binding.llContainer
         button = binding.btnNextQuestion
@@ -62,8 +64,26 @@ class QuizActivity: AppCompatActivity() {
             }
         }
 
-        populateQuestion()
+        if(quizMode == QuizMode.DAILY){
+            Log.d("Trivia", "@@@Quiz Mode Daily condition entered")
+            getDailyQuestions()
+        }
 
+    }
+
+    private fun getDailyQuestions(){
+        QuizApiManager.getDailyQuestionsList(
+            onSuccess = {dailyQuestions ->
+                if(dailyQuestions != null){
+                    questions = dailyQuestions
+                    Log.d("Trivia", "@@@Daily Questions are $questions calling populate questions now")
+                    populateQuestion()
+                }
+            },
+            onError = {error ->
+                Log.d("Trivia", "@@@Daily questions api call from Quiz Activity error $error")
+            }
+        )
     }
 
     private fun nextQuestion(){
@@ -109,6 +129,7 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun populateQuestion(){
+        Log.d("Trivia", "@@@Populate questions called")
             val lastQuestionIndex = currentQuestionIndex == questions.size - 1
             button.text = if(lastQuestionIndex){
                 getString(R.string.submit_quiz)

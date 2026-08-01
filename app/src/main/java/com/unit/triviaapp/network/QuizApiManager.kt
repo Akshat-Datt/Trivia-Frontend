@@ -15,6 +15,7 @@ object QuizApiManager {
         onError: (String) -> Unit
     ){
         try {
+            Log.d("Trivia", "@@@Quiz Api Manager getDailyQuestions entered")
             RetrofitInstance.api.getQuestions().enqueue(object : Callback<List<Question>> {
                 override fun onResponse(
                     call: Call<List<Question>?>,
@@ -22,12 +23,13 @@ object QuizApiManager {
                 ) {
                     if (response.isSuccessful) {
                         val questions = response.body()
-
+                        Log.d("Trivia", "@@@onResponse questions $questions")
                         onSuccess(questions)
                     }
                 }
 
                 override fun onFailure(call: Call<List<Question>?>, t: Throwable) {
+                    Log.d("Trivia", "@@@onFailure ${t.message.toString()}")
                     onError(t.message.toString())
                 }
             })
