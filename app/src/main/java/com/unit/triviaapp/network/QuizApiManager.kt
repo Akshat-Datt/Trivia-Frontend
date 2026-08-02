@@ -47,6 +47,7 @@ object QuizApiManager {
         onError: (String) -> Unit
     ){
         try{
+            Log.d("Trivia", "@@@Get Endless Quiz function Quiz Api entered")
             RetrofitInstance.api.getEndlessQuiz(platformId, page, limit).enqueue( object : Callback<EndlessQuestionResponse>{
                 override fun onResponse(
                     call: Call<EndlessQuestionResponse?>,

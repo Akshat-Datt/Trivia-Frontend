@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityMainBinding
 import com.unit.triviaapp.enums.QuizMode
+import com.unit.triviaapp.models.QuizConfig
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -24,8 +25,12 @@ class MainActivity : AppCompatActivity() {
 //            LoadingViewHelper.showView(binding.progressLoadingPlay)
 //            binding.btnLoad.isEnabled = false
 
+            val quizConfig = QuizConfig(
+                QuizMode.DAILY
+            )
+
             val intent = Intent(this, QuizActivity::class.java)
-            intent.putExtra(ConstKeys.DAILY_QUIZ, QuizMode.DAILY)
+            intent.putExtra(ConstKeys.QUIZ_CONFIG, quizConfig)
 
             startActivity(intent)
         }

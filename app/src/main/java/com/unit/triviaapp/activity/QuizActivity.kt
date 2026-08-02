@@ -17,6 +17,7 @@ import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.databinding.ActivityQuizBinding
 import com.unit.triviaapp.enums.QuizMode
 import com.unit.triviaapp.models.Question
+import com.unit.triviaapp.models.QuizConfig
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.utils.LoadingViewHelper
@@ -34,7 +35,7 @@ class QuizActivity: AppCompatActivity() {
     private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: List<Question>
-    private lateinit var quizMode: QuizMode
+    private lateinit var quizConfig: QuizConfig
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class QuizActivity: AppCompatActivity() {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        quizMode = intent.getSerializableExtra(ConstKeys.DAILY_QUIZ, QuizMode::class.java)?: return
+        quizConfig = intent.getSerializableExtra(ConstKeys.QUIZ_CONFIG, QuizConfig::class.java)?: return
 
         optionsContainer = binding.llContainer
         button = binding.btnNextQuestion
@@ -64,14 +65,18 @@ class QuizActivity: AppCompatActivity() {
             }
         }
 
-        if(quizMode == QuizMode.DAILY){
+        if(quizConfig.quizMode == QuizMode.DAILY){
             Log.d("Trivia", "@@@Quiz Mode Daily condition entered")
-            getDailyQuestions()
+            getDailyQuiz()
+        }
+        else if(quizConfig.quizMode == QuizMode.ENDLESS){
+            Log.d("Trivia", "@@@Quiz Mode Endless condition entered")
+            getEndlessQuiz()
         }
 
     }
 
-    private fun getDailyQuestions(){
+    private fun getDailyQuiz(){
         QuizApiManager.getDailyQuestionsList(
             onSuccess = {dailyQuestions ->
                 if(dailyQuestions != null){
@@ -82,6 +87,29 @@ class QuizActivity: AppCompatActivity() {
             },
             onError = {error ->
                 Log.d("Trivia", "@@@Daily questions api call from Quiz Activity error $error")
+            }
+        )
+    }
+
+    private fun getEndlessQuiz(){
+        Log.d("Trivia", "@@@Get Endless Quiz function entered")
+        var platform_id: Int = -1
+        quizConfig.platform_id?.let {
+            platform_id = it
+        }
+        QuizApiManager.getEndlessQuestionsList(
+            platform_id,
+            null,
+            null,
+            onSuccess = {endlessQuestionsResponse ->
+                Log.d("Trivia", "@@@Get Endless Quiz function on success entered and questions are ${endlessQuestionsResponse?.questions}")
+                if(endlessQuestionsResponse != null){
+                    questions = endlessQuestionsResponse.questions
+                    populateQuestion()
+                }
+            },
+            onError = {error ->
+                Log.d("Trivia", "@@@Endless questions api call from Quiz Activity error $error")
             }
         )
     }
