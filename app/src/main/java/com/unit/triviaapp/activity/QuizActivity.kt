@@ -7,28 +7,27 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
 import com.unit.triviaapp.R
 import com.unit.triviaapp.constants.ConstCardValues
 import com.unit.triviaapp.constants.ConstKeys
+import com.unit.triviaapp.constants.ConstValues
 import com.unit.triviaapp.databinding.ActivityQuizBinding
 import com.unit.triviaapp.enums.QuizMode
 import com.unit.triviaapp.models.Question
 import com.unit.triviaapp.models.QuizConfig
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
-import com.unit.triviaapp.utils.LoadingViewHelper
 import com.unit.triviaapp.utils.QuestionTimer
 import kotlin.collections.set
 
 class QuizActivity: AppCompatActivity() {
     private lateinit var binding: ActivityQuizBinding
     private var currentQuestionIndex = 0
+    private var isDailyQuiz = false
     private var selectedAnswers = hashMapOf<Int, Int>()
-    private var questionsRemainingTime = hashMapOf<Int, Long>()
     private var lockedQuestions = mutableSetOf<Int>()
     private lateinit var button: Button
     private lateinit var backButton: Button
@@ -49,7 +48,7 @@ class QuizActivity: AppCompatActivity() {
         button = binding.btnNextQuestion
         backButton = binding.backButton
 
-        questionTimer = QuestionTimer()
+        binding.tvQuestionTimer.visibility = View.INVISIBLE
 
         button.isEnabled = false
 
@@ -59,7 +58,6 @@ class QuizActivity: AppCompatActivity() {
 
         backButton.setOnClickListener {
             if(currentQuestionIndex > 0){
-                questionsRemainingTime[questions[currentQuestionIndex].id] = questionTimer.getRemainingTime()
                 currentQuestionIndex--
                 populateQuestion()
             }
@@ -67,6 +65,9 @@ class QuizActivity: AppCompatActivity() {
 
         if(quizConfig.quizMode == QuizMode.DAILY){
             Log.d("Trivia", "@@@Quiz Mode Daily condition entered")
+            questionTimer = QuestionTimer()
+            binding.tvQuestionTimer.visibility = View.VISIBLE
+            isDailyQuiz = true
             getDailyQuiz()
         }
         else if(quizConfig.quizMode == QuizMode.ENDLESS){
@@ -115,15 +116,15 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun nextQuestion(){
-        backButton.visibility = View.VISIBLE
+        if(!isDailyQuiz){
+            backButton.visibility = View.VISIBLE
+        }
 
         button.isEnabled = false
 
-        questionsRemainingTime[questions[currentQuestionIndex].id] = questionTimer.getRemainingTime()
-
         if (currentQuestionIndex == questions.size - 1) {
-            questionTimer.cancelTimer()
-            sendQuestions()
+            if (isDailyQuiz)questionTimer.cancelTimer()
+            sendAnswersToResultActivity()
         }
 
         if (currentQuestionIndex < questions.size - 1) {
@@ -188,21 +189,9 @@ class QuizActivity: AppCompatActivity() {
             restoreSelectedAnswer(it, optionsContainer)
         }
 
-            if(lockedQuestions.contains(questionId)){
-                questionTimer.cancelTimer()
-                binding.tvQuestionTimer.text = 0.toString()
-                Toast.makeText(this, "Time Over for this Question", Toast.LENGTH_LONG).show()
-                return
-            }
-
-            else if(questionsRemainingTime[questionId] != null && !lockedQuestions.contains(questionId)){
-                val remainingTimeOfQuestion = questionsRemainingTime[questionId] as Long * 1000
-                resetQuestionTimer(remainingTimeOfQuestion, questionId)
-            }
-
-            else {
-                resetQuestionTimer(15000, questionId)
-            }
+        if(isDailyQuiz) {
+            setQuestionTimer(questionId)
+        }
     }
 
     private fun populateOptionsPerQuestion(index: Int, option: String, questionId: Int){
@@ -246,8 +235,8 @@ class QuizActivity: AppCompatActivity() {
         }
     }
 
-    private fun resetQuestionTimer(timerValue: Long, questionId: Int){
-        questionTimer.resetTimer(timerValue,
+    private fun setQuestionTimer(questionId: Int){
+        questionTimer.resetTimer(ConstValues.TIMER_VALUE,
             onTick = { runningTime ->
                 binding.tvQuestionTimer.text = runningTime.toString()
             },
@@ -255,39 +244,20 @@ class QuizActivity: AppCompatActivity() {
                 if( selectedAnswers[questionId] == null ){
                     selectedAnswers[questionId] = -1
                 }
-                lockedQuestions.add(questionId)
                 nextQuestion()
             }
         )
     }
 
-    private fun sendQuestions(){
+    private fun sendAnswersToResultActivity(){
         Log.d("Trivia","send questions called")
 
         val submitQuiz = SubmitQuizRequest(
             answers = selectedAnswers
         )
 
-        button.isEnabled = false
-        LoadingViewHelper.showView(binding.progressLoadingSubmit)
-        Toast.makeText(this, "Submitting your answers!", Toast.LENGTH_SHORT).show()
-
-        QuizApiManager.submitQuiz(
-            submitQuiz,
-            onSuccess = { scoreResponse ->
-                val resultIntent = Intent(this@QuizActivity, ResultActivity::class.java)
-                resultIntent.putExtra(ConstKeys.SCORE, scoreResponse?.score)
-                resultIntent.putExtra(ConstKeys.TOTAL_QUESTIONS, scoreResponse?.total_questions)
-                resultIntent.putExtra(ConstKeys.ACCURACY, scoreResponse?.accuracy)
-                button.isEnabled = true
-                LoadingViewHelper.hideView(binding.progressLoadingSubmit)
-                startActivity(resultIntent)
-            },
-            onError = { error ->
-                Log.e("Trivia","Error: $error")
-                button.isEnabled = true
-                LoadingViewHelper.hideView(binding.progressLoadingSubmit)
-            }
-        )
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra(ConstKeys.ANSWERS, submitQuiz)
+        startActivity(intent)
     }
 }

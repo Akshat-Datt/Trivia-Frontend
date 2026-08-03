@@ -5,4 +5,5 @@ object ConstKeys {
     const val SCORE = "score"
     const val TOTAL_QUESTIONS = "totalQuestions"
     const val ACCURACY = "accuracy"
+    const val ANSWERS = ""
 }

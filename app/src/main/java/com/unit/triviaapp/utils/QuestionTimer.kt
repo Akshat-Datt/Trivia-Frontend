@@ -34,8 +34,4 @@ class QuestionTimer(){
         countDown?.cancel()
         startTimer(remainingTime, onTick, onFinish)
     }
-
-    fun getRemainingTime(): Long{
-        return runningTime
-    }
 }
