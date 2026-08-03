@@ -1,16 +1,11 @@
 package com.unit.triviaapp.models
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-import java.sql.Date
 
-@Parcelize
 data class Question (
         val id: Int,
         val question_text: String,
         val options: List<String>,
-        val platform_id: Int,
-        val content_type_id: Int,
+        val platform_name: String,
+        val content_type_name: String,
         val difficulty: String,
-        val challenge_date: String?
-    ) : Parcelable
+    )
