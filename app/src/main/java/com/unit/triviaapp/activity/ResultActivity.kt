@@ -14,7 +14,7 @@ import java.util.Locale
 
 class ResultActivity: AppCompatActivity() {
     private lateinit var binding: ActivityResultBinding
-    private var answers: SubmitQuizRequest? = null
+    private var submitRequest: SubmitQuizRequest? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,9 +22,9 @@ class ResultActivity: AppCompatActivity() {
         binding = ActivityResultBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        answers = intent.getSerializableExtra(ConstKeys.ANSWERS, SubmitQuizRequest::class.java)
+        submitRequest = intent.getSerializableExtra(ConstKeys.ANSWERS, SubmitQuizRequest::class.java)
 
-        answers?.let {
+        submitRequest?.let {
             QuizApiManager.submitQuiz(
                 it,
                 onSuccess = { quizResultResponse ->

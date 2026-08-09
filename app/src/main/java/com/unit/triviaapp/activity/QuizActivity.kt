@@ -26,6 +26,7 @@ import kotlin.collections.set
 class QuizActivity: AppCompatActivity() {
     private lateinit var binding: ActivityQuizBinding
     private var currentQuestionIndex = 0
+    private var platform_id = -1
     private var isDailyQuiz = false
     private var selectedAnswers = hashMapOf<Int, Int>()
     private var lockedQuestions = mutableSetOf<Int>()
@@ -94,7 +95,6 @@ class QuizActivity: AppCompatActivity() {
 
     private fun getEndlessQuiz(){
         Log.d("Trivia", "@@@Get Endless Quiz function entered")
-        var platform_id: Int = -1
         quizConfig.platform_id?.let {
             platform_id = it
         }
@@ -123,8 +123,11 @@ class QuizActivity: AppCompatActivity() {
         button.isEnabled = false
 
         if (currentQuestionIndex == questions.size - 1) {
-            if (isDailyQuiz)questionTimer.cancelTimer()
-            sendAnswersToResultActivity()
+            if (isDailyQuiz) {
+                questionTimer.cancelTimer()
+                sendDailyQuizAnswersToResultActivity()
+            }
+            else sendEndlessQuizAnswersToResultActivity()
         }
 
         if (currentQuestionIndex < questions.size - 1) {
@@ -249,10 +252,26 @@ class QuizActivity: AppCompatActivity() {
         )
     }
 
-    private fun sendAnswersToResultActivity(){
+    private fun sendDailyQuizAnswersToResultActivity(){
         Log.d("Trivia","send questions called")
 
         val submitQuiz = SubmitQuizRequest(
+            quiz_mode = QuizMode.DAILY,
+            platform_id = null,
+            answers = selectedAnswers
+        )
+
+        val intent = Intent(this, ResultActivity::class.java)
+        intent.putExtra(ConstKeys.ANSWERS, submitQuiz)
+        startActivity(intent)
+    }
+
+    private fun sendEndlessQuizAnswersToResultActivity(){
+        Log.d("Trivia","send questions called")
+
+        val submitQuiz = SubmitQuizRequest(
+            quiz_mode = QuizMode.ENDLESS,
+            platform_id = platform_id,
             answers = selectedAnswers
         )
 
