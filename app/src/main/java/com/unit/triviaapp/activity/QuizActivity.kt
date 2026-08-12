@@ -32,6 +32,7 @@ class QuizActivity: AppCompatActivity() {
     private var lockedQuestions = mutableSetOf<Int>()
     private lateinit var button: Button
     private lateinit var backButton: Button
+    private lateinit var submitButton: Button
     private lateinit var optionsContainer: LinearLayout
     private lateinit var questionTimer: QuestionTimer
     private lateinit var questions: List<Question>
@@ -48,10 +49,12 @@ class QuizActivity: AppCompatActivity() {
         optionsContainer = binding.llContainer
         button = binding.btnNextQuestion
         backButton = binding.backButton
+        submitButton = binding.btnSubmit
 
         binding.tvQuestionTimer.visibility = View.INVISIBLE
 
         button.isEnabled = false
+        submitButton.isEnabled = false
 
         button.setOnClickListener {
             nextQuestion()
@@ -64,10 +67,15 @@ class QuizActivity: AppCompatActivity() {
             }
         }
 
+        submitButton.setOnClickListener {
+            sendEndlessQuizAnswersToResultActivity()
+        }
+
         if(quizConfig.quizMode == QuizMode.DAILY){
             Log.d("Trivia", "@@@Quiz Mode Daily condition entered")
             questionTimer = QuestionTimer()
             binding.tvQuestionTimer.visibility = View.VISIBLE
+            submitButton.visibility = View.INVISIBLE
             isDailyQuiz = true
             getDailyQuiz()
         }
@@ -120,6 +128,8 @@ class QuizActivity: AppCompatActivity() {
             backButton.visibility = View.VISIBLE
         }
 
+        if(!submitButton.isEnabled) submitButton.isEnabled = true
+
         button.isEnabled = false
 
         if (currentQuestionIndex == questions.size - 1) {
@@ -127,7 +137,6 @@ class QuizActivity: AppCompatActivity() {
                 questionTimer.cancelTimer()
                 sendDailyQuizAnswersToResultActivity()
             }
-            else sendEndlessQuizAnswersToResultActivity()
         }
 
         if (currentQuestionIndex < questions.size - 1) {
@@ -169,6 +178,7 @@ class QuizActivity: AppCompatActivity() {
             else{
                 getString(R.string.next_question)
             }
+        if(lastQuestionIndex && quizConfig.quizMode == QuizMode.ENDLESS) button.visibility = View.INVISIBLE
             if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
             val questionId = questions[currentQuestionIndex].id
 
