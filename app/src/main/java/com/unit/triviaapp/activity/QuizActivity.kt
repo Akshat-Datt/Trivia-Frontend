@@ -178,8 +178,8 @@ class QuizActivity: AppCompatActivity() {
             else{
                 getString(R.string.next_question)
             }
-        if(lastQuestionIndex && quizConfig.quizMode == QuizMode.ENDLESS) button.visibility = View.INVISIBLE
-            if(currentQuestionIndex == 0) backButton.visibility = View.INVISIBLE
+            if(lastQuestionIndex && quizConfig.quizMode == QuizMode.ENDLESS){ button.visibility = View.INVISIBLE}
+            if(currentQuestionIndex == 0){ backButton.visibility = View.INVISIBLE}
             val questionId = questions[currentQuestionIndex].id
 
             binding.tvQuestionCounter.text = getString(

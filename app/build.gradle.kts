@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("org.jetbrains.kotlin.plugin.parcelize")
 }
 
@@ -36,14 +37,22 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        compose = true
     }
 }
 
 dependencies {
+    val composeBom = platform("androidx.compose:compose-bom:2026.08.00")
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+    implementation("androidx.compose.material3:material3")
+    implementation("androidx.activity:activity-compose:1.13.0")
+    implementation("androidx.compose.ui:ui")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
+    implementation(libs.androidx.runtime)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
