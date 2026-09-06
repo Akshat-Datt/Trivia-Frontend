@@ -16,7 +16,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 import com.unit.triviaapp.R
 
 @Composable
@@ -36,16 +40,24 @@ fun HomeScreen(){
         )
 
         Spacer(
-            modifier = Modifier.height(60.dp)
+            modifier = Modifier.height(20.dp)
         )
 
-        Text("Trivia Challenge")
+        Text(
+            text = "Trivia Challenge",
+            fontSize = 28.sp,
+            fontWeight = FontWeight.Bold
+        )
 
         Spacer(
-            modifier = Modifier.height(60.dp)
+            modifier = Modifier.height(8.dp)
         )
 
-        Text("Test your knowledge against the clock")
+        Text(
+            text = "Test your knowledge against the clock",
+            fontSize = 16.sp,
+            color = Color.Gray
+        )
 
         Spacer(
             modifier = Modifier.height(60.dp)
@@ -53,11 +65,76 @@ fun HomeScreen(){
 
         Row(
             modifier = Modifier.fillMaxWidth()
-                .padding(32.dp),
+                .padding(horizontal = 32.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text("⚡ Timed Questions")
-            Text("🏆 Challenge Yourself")
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "⚡",
+                    fontSize = 28.sp
+                )
+
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+
+                Text(
+                    text = "Timed Questions",
+                    fontSize = 16.sp
+                )
+            }
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "🏆",
+                    fontSize = 28.sp
+                )
+
+                Spacer(
+                    modifier = Modifier.height(4.dp)
+                )
+
+                Text(
+                    text = "Challenge Yourself",
+                    fontSize = 16.sp
+                )
+            }
+        }
+
+        Spacer(
+            modifier = Modifier.height(60.dp)
+        )
+
+        Button(
+            onClick = {
+
+            },
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text(
+                text = "Daily Quiz"
+            )
+        }
+
+        Spacer(
+            modifier = Modifier.height(16.dp)
+        )
+
+        Button(
+            onClick = {
+
+            },
+            modifier = Modifier.fillMaxWidth()
+                .padding(horizontal = 32.dp)
+        ) {
+            Text(
+                text = "Endless Quiz"
+            )
         }
     }
 }
