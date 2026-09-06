@@ -9,8 +9,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.res.painterResource
 import com.unit.triviaapp.R
@@ -42,5 +46,18 @@ fun HomeScreen(){
         )
 
         Text("Test your knowledge against the clock")
+
+        Spacer(
+            modifier = Modifier.height(60.dp)
+        )
+
+        Row(
+            modifier = Modifier.fillMaxWidth()
+                .padding(32.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text("⚡ Timed Questions")
+            Text("🏆 Challenge Yourself")
+        }
     }
 }
