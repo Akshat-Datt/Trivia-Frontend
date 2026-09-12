@@ -18,6 +18,7 @@ fun TriviaAppTheme(
     MaterialTheme(
         typography = TriviaTypography,
         colorScheme = TriviaColorTheme,
+        shapes = TriviaShapes,
         content = content
     )
 }

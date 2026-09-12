@@ -114,7 +114,8 @@ fun HomeScreen(){
 
             },
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp)
+                .padding(horizontal = 32.dp),
+            shape = MaterialTheme.shapes.large
         ) {
             Text(
                 text = "Daily Quiz"
@@ -130,7 +131,8 @@ fun HomeScreen(){
 
             },
             modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp)
+                .padding(horizontal = 32.dp),
+            shape = MaterialTheme.shapes.large
         ) {
             Text(
                 text = "Endless Quiz"
