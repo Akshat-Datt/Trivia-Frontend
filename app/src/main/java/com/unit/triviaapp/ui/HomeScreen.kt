@@ -45,8 +45,7 @@ fun HomeScreen(){
 
         Text(
             text = "Trivia Challenge",
-            fontSize = 28.sp,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.headlineLarge,
             color = MaterialTheme.colorScheme.onBackground
         )
 
@@ -56,7 +55,7 @@ fun HomeScreen(){
 
         Text(
             text = "Test your knowledge against the clock",
-            fontSize = 16.sp,
+            style = MaterialTheme.typography.bodyLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
 
@@ -74,7 +73,7 @@ fun HomeScreen(){
             ) {
                 Text(
                     text = "⚡",
-                    fontSize = 28.sp
+                    style = MaterialTheme.typography.headlineLarge
                 )
 
                 Spacer(
@@ -83,7 +82,7 @@ fun HomeScreen(){
 
                 Text(
                     text = "Timed Questions",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
@@ -93,7 +92,7 @@ fun HomeScreen(){
             ) {
                 Text(
                     text = "🏆",
-                    fontSize = 28.sp
+                    style = MaterialTheme.typography.headlineLarge
                 )
 
                 Spacer(
@@ -102,7 +101,7 @@ fun HomeScreen(){
 
                 Text(
                     text = "Challenge Yourself",
-                    fontSize = 16.sp,
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }

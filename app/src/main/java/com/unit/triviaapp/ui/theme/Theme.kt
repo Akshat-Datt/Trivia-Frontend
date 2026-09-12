@@ -16,6 +16,7 @@ fun TriviaAppTheme(
     content: @Composable () -> Unit
 ){
     MaterialTheme(
+        typography = TriviaTypography,
         colorScheme = TriviaColorTheme,
         content = content
     )
