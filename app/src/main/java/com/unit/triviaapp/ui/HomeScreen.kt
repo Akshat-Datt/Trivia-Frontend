@@ -17,8 +17,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.unit.triviaapp.R
@@ -46,7 +46,8 @@ fun HomeScreen(){
         Text(
             text = "Trivia Challenge",
             fontSize = 28.sp,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(
@@ -56,7 +57,7 @@ fun HomeScreen(){
         Text(
             text = "Test your knowledge against the clock",
             fontSize = 16.sp,
-            color = Color.Gray
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         Spacer(
@@ -82,7 +83,8 @@ fun HomeScreen(){
 
                 Text(
                     text = "Timed Questions",
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
 
@@ -100,7 +102,8 @@ fun HomeScreen(){
 
                 Text(
                     text = "Challenge Yourself",
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
         }
