@@ -17,111 +17,131 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.ui.res.painterResource
 import com.unit.triviaapp.R
 
 @Composable
 fun HomeScreen(){
-    Column(
+    Surface(
         modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        color = MaterialTheme.colorScheme.background
     ) {
-        Spacer(
-            modifier = Modifier.height(60.dp)
-        )
-
-        Image(
-            painter = painterResource(R.drawable.trivia_icon),
-            contentDescription = "Trivia Challenge logo",
-            modifier = Modifier.size(100.dp)
-        )
-
-        Spacer(
-            modifier = Modifier.height(20.dp)
-        )
-
-        Text(
-            text = "Trivia Challenge",
-            style = MaterialTheme.typography.headlineLarge,
-            color = MaterialTheme.colorScheme.onBackground
-        )
-
-        Spacer(
-            modifier = Modifier.height(8.dp)
-        )
-
-        Text(
-            text = "Test your knowledge against the clock",
-            style = MaterialTheme.typography.bodyLarge,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(
-            modifier = Modifier.height(60.dp)
-        )
-
-        Row(
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            FeatureRow(
-                "⚡",
-                "Timed Questions"
+            Spacer(
+                modifier = Modifier.height(60.dp)
             )
 
-            FeatureRow(
-                "🏆",
-                "Challenge Yourself"
+            Image(
+                painter = painterResource(R.drawable.trivia_icon),
+                contentDescription = "Trivia Challenge logo",
+                modifier = Modifier.size(100.dp)
+            )
+
+            Spacer(
+                modifier = Modifier.height(20.dp)
+            )
+
+            Text(
+                text = "Trivia Challenge",
+                style = MaterialTheme.typography.headlineLarge,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            Spacer(
+                modifier = Modifier.height(8.dp)
+            )
+
+            Text(
+                text = "Test your knowledge against the clock",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+
+            Spacer(
+                modifier = Modifier.height(60.dp)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .padding(horizontal = 32.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                FeatureRow(
+                    "⚡",
+                    "Timed Questions",
+                    modifier = Modifier.weight(1f)
+                )
+
+                FeatureRow(
+                    "🏆",
+                    "Challenge Yourself",
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(60.dp)
+            )
+
+            QuizModeButton(
+                "Daily Quiz",
+                onClick = {
+
+                }
+            )
+
+            Spacer(
+                modifier = Modifier.height(16.dp)
+            )
+
+            QuizModeButton(
+                "Endless Quiz",
+                onClick = {
+
+                }
             )
         }
-
-        Spacer(
-            modifier = Modifier.height(60.dp)
-        )
-
-        QuizModeButton(
-            "Daily Quiz",
-            onClick = {
-
-            }
-        )
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        QuizModeButton(
-            "Endless Quiz",
-            onClick = {
-
-            }
-        )
     }
 }
 
 @Composable
 fun FeatureRow(
     icon: String,
-    title: String
+    title: String,
+    modifier: Modifier
 ){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
+    Surface(
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large,
+        color = MaterialTheme.colorScheme.surface,
+        tonalElevation = 2.dp
     ) {
-        Text(
-            text = icon,
-            style = MaterialTheme.typography.headlineLarge
-        )
+        Column(
+            modifier = Modifier.padding(
+                horizontal = 16.dp,
+                vertical = 16.dp
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = icon,
+                style = MaterialTheme.typography.headlineLarge
+            )
 
-        Spacer(
-            modifier = Modifier.height(4.dp)
-        )
+            Spacer(
+                modifier = Modifier.height(4.dp)
+            )
 
-        Text(
-            text = title,
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onBackground
-        )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
     }
 }
 

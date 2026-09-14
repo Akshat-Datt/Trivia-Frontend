@@ -18,12 +18,7 @@ class MainActivity : AppCompatActivity() {
 
         setContent {
             TriviaAppTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    HomeScreen()
-                }
+                HomeScreen()
             }
         }
     }

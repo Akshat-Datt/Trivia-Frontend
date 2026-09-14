@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 private val TriviaColorTheme = lightColorScheme(
     primary = TriviaPrimary,
     background = TriviaBackground,
+    surface = TriviaSurface,
     onBackground = TriviaTextPrimary,
     onSurface = TriviaTextSecondary
 )
