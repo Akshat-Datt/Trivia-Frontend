@@ -1,6 +1,5 @@
 package com.unit.triviaapp.ui
 
-
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -66,77 +65,79 @@ fun HomeScreen(){
                 .padding(horizontal = 32.dp),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "⚡",
-                    style = MaterialTheme.typography.headlineLarge
-                )
+            FeatureRow(
+                "⚡",
+                "Timed Questions"
+            )
 
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
-
-                Text(
-                    text = "Timed Questions",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    text = "🏆",
-                    style = MaterialTheme.typography.headlineLarge
-                )
-
-                Spacer(
-                    modifier = Modifier.height(4.dp)
-                )
-
-                Text(
-                    text = "Challenge Yourself",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
+            FeatureRow(
+                "🏆",
+                "Challenge Yourself"
+            )
         }
 
         Spacer(
             modifier = Modifier.height(60.dp)
         )
 
-        Button(
+        QuizModeButton(
+            "Daily Quiz",
             onClick = {
 
-            },
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Text(
-                text = "Daily Quiz"
-            )
-        }
+            }
+        )
 
         Spacer(
             modifier = Modifier.height(16.dp)
         )
 
-        Button(
+        QuizModeButton(
+            "Endless Quiz",
             onClick = {
 
-            },
-            modifier = Modifier.fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            shape = MaterialTheme.shapes.large
-        ) {
-            Text(
-                text = "Endless Quiz"
-            )
-        }
+            }
+        )
+    }
+}
+
+@Composable
+fun FeatureRow(
+    icon: String,
+    title: String
+){
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = icon,
+            style = MaterialTheme.typography.headlineLarge
+        )
+
+        Spacer(
+            modifier = Modifier.height(4.dp)
+        )
+
+        Text(
+            text = title,
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onBackground
+        )
+    }
+}
+
+@Composable
+fun QuizModeButton(
+    title: String,
+    onClick: () -> Unit
+){
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth()
+            .padding(horizontal = 32.dp),
+        shape = MaterialTheme.shapes.large
+    ) {
+        Text(
+            text = title
+        )
     }
 }
