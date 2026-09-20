@@ -8,7 +8,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import androidx.compose.material3.Text
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,8 +21,11 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.res.painterResource
 import com.unit.triviaapp.R
+import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
+import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
 
 private val ScreenHorizontalPadding = 24.dp
 private val SectionSpacing = 32.dp
@@ -28,9 +33,17 @@ private val ElementSpacing = 12.dp
 
 @Composable
 fun HomeScreen(){
-    Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = MaterialTheme.colorScheme.background
+    Box (
+        modifier = Modifier.fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        TriviaBackgroundTop,
+                        TriviaBackgroundBottom
+                    )
+                )
+            )
+
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
