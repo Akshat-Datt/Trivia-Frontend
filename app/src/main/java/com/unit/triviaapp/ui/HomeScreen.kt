@@ -17,9 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.ui.res.painterResource
 import com.unit.triviaapp.R
+
+private val ScreenHorizontalPadding = 24.dp
+private val SectionSpacing = 32.dp
+private val ElementSpacing = 12.dp
 
 @Composable
 fun HomeScreen(){
@@ -29,12 +34,9 @@ fun HomeScreen(){
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Spacer(
-                modifier = Modifier.height(60.dp)
-            )
-
             Image(
                 painter = painterResource(R.drawable.trivia_icon),
                 contentDescription = "Trivia Challenge logo",
@@ -42,41 +44,42 @@ fun HomeScreen(){
             )
 
             Spacer(
-                modifier = Modifier.height(20.dp)
+                modifier = Modifier.height(SectionSpacing)
             )
 
-            Text(
-                text = "Trivia Challenge",
-                style = MaterialTheme.typography.headlineLarge,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(ElementSpacing)
+            ) {
+                Text(
+                    text = "Trivia Challenge",
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+
+                Text(
+                    text = "Test your knowledge against the clock",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
 
             Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-            Text(
-                text = "Test your knowledge against the clock",
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
-            )
-
-            Spacer(
-                modifier = Modifier.height(60.dp)
+                modifier = Modifier.height(SectionSpacing)
             )
 
             Row(
                 modifier = Modifier.fillMaxWidth()
-                    .padding(horizontal = 32.dp),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    .padding(horizontal = ScreenHorizontalPadding),
+                horizontalArrangement = Arrangement.spacedBy(ElementSpacing)
             ) {
-                FeatureRow(
+                FeatureItem(
                     "⚡",
                     "Timed Questions",
                     modifier = Modifier.weight(1f)
                 )
 
-                FeatureRow(
+                FeatureItem(
                     "🏆",
                     "Challenge Yourself",
                     modifier = Modifier.weight(1f)
@@ -84,32 +87,39 @@ fun HomeScreen(){
             }
 
             Spacer(
-                modifier = Modifier.height(60.dp)
+                modifier = Modifier.height(SectionSpacing)
             )
 
-            QuizModeButton(
-                "Daily Quiz",
-                onClick = {
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(ElementSpacing)
+            ) {
+                QuizModeButton(
+                    "Daily Quiz",
+                    onClick = {
 
-                }
-            )
+                    },
+                    primary = true,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = ScreenHorizontalPadding)
+                )
 
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
+                QuizModeButton(
+                    "Endless Quiz",
+                    onClick = {
 
-            QuizModeButton(
-                "Endless Quiz",
-                onClick = {
-
-                }
-            )
+                    },
+                    primary = false,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = ScreenHorizontalPadding)
+                )
+            }
         }
     }
 }
 
 @Composable
-fun FeatureRow(
+fun FeatureItem(
     icon: String,
     title: String,
     modifier: Modifier
@@ -148,16 +158,30 @@ fun FeatureRow(
 @Composable
 fun QuizModeButton(
     title: String,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    primary: Boolean = true,
+    modifier: Modifier
 ){
-    Button(
-        onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
-            .padding(horizontal = 32.dp),
-        shape = MaterialTheme.shapes.large
-    ) {
-        Text(
-            text = title
-        )
+    if(primary) {
+        Button(
+            onClick = onClick,
+            modifier = modifier,
+            shape = MaterialTheme.shapes.large
+        ) {
+            Text(
+                text = title
+            )
+        }
+    }
+    else{
+        OutlinedButton(
+            onClick = onClick,
+            modifier = modifier,
+            shape = MaterialTheme.shapes.large
+        ) {
+            Text(
+                text = title
+            )
+        }
     }
 }
