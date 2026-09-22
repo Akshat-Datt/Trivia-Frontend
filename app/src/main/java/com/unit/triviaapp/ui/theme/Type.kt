@@ -7,7 +7,7 @@ import androidx.compose.ui.unit.sp
 
 val TriviaTypography = Typography(
     headlineLarge = TextStyle(
-        fontSize = 28.sp,
+        fontSize = 30.sp,
         fontWeight = FontWeight.Bold
     ),
     bodyLarge = TextStyle(
