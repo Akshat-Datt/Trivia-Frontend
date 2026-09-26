@@ -12,8 +12,11 @@ val TriviaBackgroundTop = Color(0xFFFFDDB8)
 val TriviaBackgroundMiddle = Color(0xFFFFE8CF)
 val TriviaBackgroundBottom = Color(0xFFFFF1E2)
 
-val TriviaCardLavender = Color(0xFFF0E7FF)
-val TriviaCardWarm = Color(0xFFFFF0D8)
+val TriviaCardLavender = Color(0xFFE7DCFF)
+val TriviaCardLavenderIcon = Color(0xFFD6C4FA)
+
+val TriviaCardGold = Color(0xFFFFE5B8)
+val TriviaCardGoldIcon = Color(0xFFFFD79A)
 
 val TriviaTextPrimary = Color(0xFF35116B)
 val TriviaTextSecondary = Color(0xFF675B72)

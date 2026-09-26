@@ -30,23 +30,25 @@ import androidx.compose.ui.text.font.FontWeight
 import com.unit.triviaapp.R
 import androidx.compose.ui.graphics.Path
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
-import androidx.compose.material.icons.filled.Bolt
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.ui.unit.sp
 import com.unit.triviaapp.ui.theme.TriviaAccent
 import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
 import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
 import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
+import com.unit.triviaapp.ui.theme.TriviaCardGold
+import com.unit.triviaapp.ui.theme.TriviaCardGoldIcon
 import com.unit.triviaapp.ui.theme.TriviaCardLavender
-import com.unit.triviaapp.ui.theme.TriviaCardWarm
+import com.unit.triviaapp.ui.theme.TriviaCardLavenderIcon
 import com.unit.triviaapp.ui.theme.TriviaPink
 import com.unit.triviaapp.ui.theme.TriviaPrimary
+import com.unit.triviaapp.ui.theme.TriviaTextSecondary
 import com.unit.triviaapp.ui.theme.TriviaWaveLavender
 
 private val ScreenHorizontalPadding = 24.dp
@@ -172,11 +174,7 @@ fun HomeScreen(){
             Image(
                 painter = painterResource(R.drawable.trivia_icon),
                 contentDescription = "Trivia Challenge logo",
-                modifier = Modifier.size(100.dp)
-            )
-
-            Spacer(
-                modifier = Modifier.height(SectionSpacing)
+                modifier = Modifier.size(150.dp)
             )
 
             Column(
@@ -185,14 +183,23 @@ fun HomeScreen(){
             ) {
                 Text(
                     text = "Trivia Challenge",
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.onBackground
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                TriviaPrimary,
+                                TriviaPink,
+                                TriviaAccent
+                            )
+                        )
+                    )
                 )
 
                 Text(
                     text = "Test your knowledge against the clock",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.onSurface
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 15.sp
+                    ),
+                    color = TriviaTextSecondary
                 )
             }
 
@@ -202,20 +209,23 @@ fun HomeScreen(){
 
             Row(
                 modifier = Modifier.fillMaxWidth()
+                    .height(180.dp)
                     .padding(horizontal = ScreenHorizontalPadding),
-                horizontalArrangement = Arrangement.spacedBy(ElementSpacing)
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 FeatureItem(
-                    Icons.Default.Bolt,
+                    R.drawable.bolt_icon,
                     "Timed Questions",
                     TriviaCardLavender,
+TriviaCardLavenderIcon,
                     modifier = Modifier.weight(1f)
                 )
 
                 FeatureItem(
-                    Icons.Default.EmojiEvents,
+                    R.drawable.trophy_icon,
                     "Challenge Yourself",
-                    TriviaCardWarm,
+                    TriviaCardGold,
+                    TriviaCardGoldIcon,
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -252,30 +262,47 @@ fun HomeScreen(){
 
 @Composable
 fun FeatureItem(
-    icon: ImageVector,
+    imageRes: Int,
     title: String,
     containerColor: Color,
-    modifier: Modifier
+    iconContainerColor: Color,
+    modifier: Modifier = Modifier
 ){
-    Surface(
+    Card (
         modifier = modifier,
         shape = MaterialTheme.shapes.large,
-        color = containerColor,
-        tonalElevation = 2.dp
-    ) {
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
+        )
+    ){
         Column(
-            modifier = Modifier.padding(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
                 horizontal = 16.dp,
                 vertical = 20.dp
             ),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = null,
-                modifier = Modifier.size(32.dp),
-                tint = TriviaAccent
-            )
+            Surface(
+                modifier = Modifier.size(75.dp),
+                shape = CircleShape,
+                color = iconContainerColor
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ){
+                    Image(
+                        painter = painterResource(imageRes),
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
+            }
 
             Spacer(
                 modifier = Modifier.height(10.dp)
