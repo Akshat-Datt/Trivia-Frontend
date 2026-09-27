@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.card.MaterialCardView
@@ -15,18 +16,22 @@ import com.unit.triviaapp.enums.QuizMode
 import com.unit.triviaapp.models.Platforms
 import com.unit.triviaapp.models.QuizConfig
 import com.unit.triviaapp.network.PlatformsApiManager
+import com.unit.triviaapp.ui.PlatformsScreen
+import com.unit.triviaapp.ui.theme.TriviaAppTheme
 
 class PlatformActivity: AppCompatActivity(){
-    private lateinit var binding: ActivityPlatformBinding
     private var fetchedPlatforms: List<Platforms>? = null
     private lateinit var platformsContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityPlatformBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-        platformsContainer = binding.llContainer
+
+        setContent {
+            TriviaAppTheme {
+                PlatformsScreen()
+            }
+        }
 
         getPlatformsList()
     }

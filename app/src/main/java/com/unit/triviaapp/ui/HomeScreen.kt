@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
@@ -28,8 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import com.unit.triviaapp.R
-import androidx.compose.ui.graphics.Path
-import androidx.compose.foundation.Canvas
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AllInclusive
 import androidx.compose.material.icons.filled.ChevronRight
@@ -49,7 +46,6 @@ import com.unit.triviaapp.ui.theme.TriviaCardLavenderIcon
 import com.unit.triviaapp.ui.theme.TriviaPink
 import com.unit.triviaapp.ui.theme.TriviaPrimary
 import com.unit.triviaapp.ui.theme.TriviaTextSecondary
-import com.unit.triviaapp.ui.theme.TriviaWaveLavender
 
 private val ScreenHorizontalPadding = 24.dp
 private val SectionSpacing = 32.dp
@@ -73,101 +69,7 @@ fun HomeScreen(
             )
 
     ) {
-        Box(
-            modifier = Modifier
-                .size(220.dp)
-                .offset(
-                    x = (-100).dp,
-                    y = (-40).dp
-                )
-                .background(
-                    color = TriviaPink.copy(alpha = 0.08f),
-                    shape = CircleShape
-                )
-        )
-
-        Box(
-            modifier = Modifier
-                .size(260.dp)
-                .align(Alignment.TopEnd)
-                .offset(
-                    x = 100.dp,
-                    y = 120.dp
-                )
-                .background(
-                    color = TriviaAccent.copy(alpha = 0.07f),
-                    shape = CircleShape
-                )
-        )
-
-        Canvas(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(180.dp)
-                .align(Alignment.BottomCenter)
-        ) {
-            val wave = Path().apply {
-
-                moveTo(
-                    0f,
-                    size.height * 0.35f
-                )
-
-                quadraticBezierTo(
-                    size.width * 0.30f,
-                    size.height * 0.05f,
-                    size.width * 0.60f,
-                    size.height * 0.55f
-                )
-
-                quadraticBezierTo(
-                    size.width * 0.82f,
-                    size.height * 0.90f,
-                    size.width,
-                    size.height * 0.35f
-                )
-
-                lineTo(size.width, size.height)
-                lineTo(0f, size.height)
-                close()
-            }
-
-            drawPath(
-                path = wave,
-                color = TriviaPink.copy(alpha = 0.12f)
-            )
-
-            val secondWave = Path().apply {
-
-                moveTo(
-                    0f,
-                    size.height * 0.65f
-                )
-
-                quadraticBezierTo(
-                    size.width * 0.25f,
-                    size.height * 0.35f,
-                    size.width * 0.55f,
-                    size.height * 0.75f
-                )
-
-                quadraticBezierTo(
-                    size.width * 0.78f,
-                    size.height,
-                    size.width,
-                    size.height * 0.55f
-                )
-
-                lineTo(size.width, size.height)
-                lineTo(0f, size.height)
-                close()
-            }
-
-            drawPath(
-                path = secondWave,
-                color = TriviaWaveLavender.copy(alpha = 0.20f)
-            )
-        }
+        BackgroundElements()
 
         Column(
             modifier = Modifier.fillMaxSize(),
