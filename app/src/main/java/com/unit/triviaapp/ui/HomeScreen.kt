@@ -56,7 +56,10 @@ private val SectionSpacing = 32.dp
 private val ElementSpacing = 12.dp
 
 @Composable
-fun HomeScreen(){
+fun HomeScreen(
+    onDailyQuizClick: () -> Unit,
+    onEndlessQuizClick: () -> Unit,
+){
     Box (
         modifier = Modifier.fillMaxSize()
             .background(
@@ -240,18 +243,14 @@ TriviaCardLavenderIcon,
             ) {
                 DailyQuizModeButton(
                     "Daily Quiz",
-                    onClick = {
-
-                    },
+                    onClick = onDailyQuizClick,
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = ScreenHorizontalPadding)
                 )
 
                 EndlessQuizButton(
                     "Endless Quiz",
-                    onClick = {
-
-                    },
+                    onClick = onEndlessQuizClick,
                     modifier = Modifier.fillMaxWidth()
                         .padding(horizontal = ScreenHorizontalPadding)
                 )
