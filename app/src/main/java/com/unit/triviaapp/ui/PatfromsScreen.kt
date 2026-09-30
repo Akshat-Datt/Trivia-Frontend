@@ -1,17 +1,41 @@
 package com.unit.triviaapp.ui
 
+import com.unit.triviaapp.R
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.unit.triviaapp.models.Platforms
+import com.unit.triviaapp.ui.states.PlatformUiState
+import com.unit.triviaapp.ui.theme.TriviaAccent
 import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
 import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
 import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
+import com.unit.triviaapp.ui.theme.TriviaPink
+import com.unit.triviaapp.ui.theme.TriviaPrimary
+import com.unit.triviaapp.ui.theme.TriviaTextSecondary
+
+private val ScreenHorizontalPadding = 24.dp
+private val SectionSpacing = 32.dp
+private val ElementSpacing = 12.dp
 
 @Composable
-fun PlatformsScreen(){
+fun PlatformsScreen(
+    uiState: PlatformUiState,
+    onPlatformClick: (Platforms) -> Unit
+){
     Box (
         modifier = Modifier.fillMaxSize()
             .background(
@@ -26,5 +50,57 @@ fun PlatformsScreen(){
 
     ){
         BackgroundElements()
+
+        when(uiState){
+            PlatformUiState.Loading -> {
+                Text("LOADING...")
+            }
+
+            is PlatformUiState.Success -> {
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.controller_top),
+                        contentDescription = null,
+                        modifier = Modifier.size(150.dp)
+                    )
+
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(ElementSpacing)
+                    ) {
+                        Text(
+                            text = "Choose Your Platform",
+                            style = MaterialTheme.typography.headlineLarge.copy(
+                                brush = Brush.horizontalGradient(
+                                    colors = listOf(
+                                        TriviaPrimary,
+                                        TriviaPink,
+                                        TriviaAccent
+                                    )
+                                )
+                            )
+                        )
+
+                        Text(
+                            text = "Pick a platform to start your endless challenge",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                fontSize = 15.sp
+                            ),
+                            color = TriviaTextSecondary
+                        )
+
+                        Text("Loaded Platforms successfully ${uiState.platforms.size}")
+                    }
+                }
+            }
+
+            is PlatformUiState.Error -> {
+                Text("Error ${uiState.message}")
+            }
+        }
     }
 }
