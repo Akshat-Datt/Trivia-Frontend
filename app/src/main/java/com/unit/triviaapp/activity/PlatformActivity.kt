@@ -10,12 +10,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.unit.triviaapp.network.PlatformsApiManager
 import com.unit.triviaapp.ui.PlatformsScreen
-import com.unit.triviaapp.ui.states.PlatformUiState
+import com.unit.triviaapp.ui.states.PlatformsUiState
 import com.unit.triviaapp.ui.theme.TriviaAppTheme
 
 class PlatformActivity: AppCompatActivity(){
-    private var uiState by mutableStateOf<PlatformUiState>(
-        PlatformUiState.Loading
+    private var uiState by mutableStateOf<PlatformsUiState>(
+        PlatformsUiState.Loading
     )
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,19 +40,19 @@ class PlatformActivity: AppCompatActivity(){
         PlatformsApiManager.getPlatformsList(
             onSuccess = { platforms ->
                 if(platforms != null){
-                    uiState = PlatformUiState.Success(
+                    uiState = PlatformsUiState.Success(
                         platforms = platforms
                     )
                 }
                 else{
-                    uiState = PlatformUiState.Error(
-                        message = "Platforms are empty()"
+                    uiState = PlatformsUiState.Error(
+                        message = "No Platforms received"
                     )
                 }
             },
             onError = {error ->
                 Log.d("Trivia", "Error while fetching platforms list via platforms api manager $error")
-                uiState = PlatformUiState.Error(
+                uiState = PlatformsUiState.Error(
                     message = "Platforms returned an error"
                 )
             }
