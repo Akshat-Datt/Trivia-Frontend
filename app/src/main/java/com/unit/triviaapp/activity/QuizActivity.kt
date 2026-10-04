@@ -178,7 +178,8 @@ class QuizActivity: AppCompatActivity() {
             else{
                 getString(R.string.next_question)
             }
-            if(lastQuestionIndex && quizConfig.quizMode == QuizMode.ENDLESS){ button.visibility = View.INVISIBLE}
+            if(lastQuestionIndex && quizConfig.quizMode == QuizMode.ENDLESS){ button.visibility = View.INVISIBLE
+            }
             if(currentQuestionIndex == 0){ backButton.visibility = View.INVISIBLE}
             val questionId = questions[currentQuestionIndex].id
 
@@ -245,6 +246,8 @@ class QuizActivity: AppCompatActivity() {
             val answerIndex = answerCard.tag
             selectedAnswers[questionId] = answerIndex as Int
             button.isEnabled = true
+
+            if(quizConfig.quizMode == QuizMode.ENDLESS && !submitButton.isEnabled) submitButton.isEnabled = true
         }
     }
 

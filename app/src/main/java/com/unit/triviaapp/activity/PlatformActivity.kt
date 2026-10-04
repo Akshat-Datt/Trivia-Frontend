@@ -1,5 +1,6 @@
 package com.unit.triviaapp.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -8,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.unit.triviaapp.constants.ConstKeys
+import com.unit.triviaapp.enums.QuizMode
+import com.unit.triviaapp.models.QuizConfig
 import com.unit.triviaapp.network.PlatformsApiManager
 import com.unit.triviaapp.ui.PlatformsScreen
 import com.unit.triviaapp.ui.states.PlatformsUiState
@@ -27,7 +31,15 @@ class PlatformActivity: AppCompatActivity(){
                 PlatformsScreen(
                     uiState,
                     onPlatformClick = { platform ->
+                        val quizConfig = QuizConfig(
+                            quizMode = QuizMode.ENDLESS,
+                            platform_id = platform.id
+                        )
 
+                        val intent = Intent(this, QuizActivity::class.java)
+                        intent.putExtra(ConstKeys.QUIZ_CONFIG, quizConfig)
+
+                        startActivity(intent)
                     }
                 )
             }
