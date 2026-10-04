@@ -29,17 +29,23 @@ import com.unit.triviaapp.ui.theme.TriviaPink
 import com.unit.triviaapp.ui.theme.TriviaPrimary
 import com.unit.triviaapp.ui.theme.TriviaTextSecondary
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
+import androidx.compose.ui.text.font.FontWeight
+import com.unit.triviaapp.ui.theme.TriviaCardGold
+import com.unit.triviaapp.ui.theme.TriviaCardGoldIcon
 import com.unit.triviaapp.ui.theme.TriviaCardLavender
+import com.unit.triviaapp.ui.theme.TriviaCardLavenderIcon
 import com.unit.triviaapp.ui.theme.TriviaTextPrimary
 
 private val ScreenHorizontalPadding = 24.dp
@@ -113,15 +119,18 @@ fun PlatformsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
-                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(20.dp),
                         contentPadding = PaddingValues(
                             horizontal = ScreenHorizontalPadding,
                             vertical = 12.dp
                         )
                     ) {
-                        items(uiState.platforms) { platform ->
+                        itemsIndexed(
+                            items = uiState.platforms
+                        ) { index, platform ->
                             PlatformCard(
                                 platform = platform,
+                                isAlternate = index % 2 != 0,
                                 onClick = {
                                     onPlatformClick(platform)
                                 }
@@ -141,8 +150,17 @@ fun PlatformsScreen(
 @Composable
 fun PlatformCard(
     platform: Platforms,
+    isAlternate: Boolean,
     onClick: () -> Unit
 ) {
+    val cardColor =
+        if(isAlternate) TriviaCardGold
+        else TriviaCardLavender
+
+    val iconBackgroundColor =
+        if(isAlternate) TriviaCardGoldIcon
+        else TriviaCardLavenderIcon
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -150,7 +168,7 @@ fun PlatformCard(
             .clickable(onClick = onClick),
         shape = MaterialTheme.shapes.large,
         colors = CardDefaults.cardColors(
-            containerColor = TriviaCardLavender
+            containerColor = cardColor
         ),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 3.dp
@@ -161,14 +179,31 @@ fun PlatformCard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 20.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
 
-            // We'll add the icon here
+            Surface (
+                modifier = Modifier.size(80.dp),
+                shape = CircleShape,
+                color = iconBackgroundColor
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(
+                            platformIcon(platform.id)
+                        ),
+                        contentDescription = null,
+                        modifier = Modifier.size(65.dp)
+                    )
+                }
+            }
 
             Text(
                 text = platform.platform_name,
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f)
+                    .padding(start = 10.dp),
                 style = MaterialTheme.typography.titleLarge,
                 color = TriviaTextPrimary
             )
@@ -179,5 +214,16 @@ fun PlatformCard(
                 tint = TriviaPrimary
             )
         }
+    }
+}
+
+private fun platformIcon(platformId: Int): Int {
+    return when (platformId) {
+        1 -> R.drawable.pc_icon
+        2 -> R.drawable.playstation_icon
+        3 -> R.drawable.xbox_icon
+        4 -> R.drawable.nintendo_icon
+        5 -> R.drawable.mobile_icon
+        else -> R.drawable.controller_top
     }
 }
