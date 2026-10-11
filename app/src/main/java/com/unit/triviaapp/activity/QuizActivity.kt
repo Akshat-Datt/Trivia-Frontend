@@ -22,6 +22,7 @@ import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.utils.QuestionTimer
 import kotlin.collections.set
+import android.os.Build
 
 class QuizActivity: AppCompatActivity() {
     private lateinit var binding: ActivityQuizBinding
@@ -44,7 +45,17 @@ class QuizActivity: AppCompatActivity() {
         binding = ActivityQuizBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        quizConfig = intent.getSerializableExtra(ConstKeys.QUIZ_CONFIG, QuizConfig::class.java)?: return
+        quizConfig = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            intent.getSerializableExtra(
+                ConstKeys.QUIZ_CONFIG,
+                QuizConfig::class.java
+            )
+        } else{
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra(
+                ConstKeys.QUIZ_CONFIG
+            ) as? QuizConfig
+        }?: return
 
         optionsContainer = binding.llContainer
         button = binding.btnNextQuestion

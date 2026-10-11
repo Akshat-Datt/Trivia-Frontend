@@ -1,6 +1,7 @@
 package com.unit.triviaapp.activity
 
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ class ResultActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
 
         setContent {
@@ -39,7 +41,17 @@ class ResultActivity: AppCompatActivity() {
             }
         }
 
-        val submitRequest = intent.getSerializableExtra(ConstKeys.ANSWERS, SubmitQuizRequest::class.java)
+        val submitRequest = if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU){
+            intent.getSerializableExtra(
+                ConstKeys.ANSWERS,
+                SubmitQuizRequest::class.java
+            )
+        } else{
+            @Suppress("DEPRECATION")
+            intent.getSerializableExtra(
+                ConstKeys.ANSWERS
+            ) as? SubmitQuizRequest
+        }
 
         submitRequest?.let {
             getResult(it)
