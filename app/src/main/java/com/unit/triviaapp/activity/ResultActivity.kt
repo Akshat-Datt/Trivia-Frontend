@@ -14,7 +14,7 @@ import com.unit.triviaapp.constants.ConstKeys
 import com.unit.triviaapp.models.SubmitQuizRequest
 import com.unit.triviaapp.network.QuizApiManager
 import com.unit.triviaapp.ui.states.ResultUiState
-import com.unit.triviaapp.ui.theme.ResultScreen
+import com.unit.triviaapp.ui.ResultScreen
 import com.unit.triviaapp.ui.theme.TriviaAppTheme
 
 class ResultActivity: AppCompatActivity() {
