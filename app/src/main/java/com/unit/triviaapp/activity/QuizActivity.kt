@@ -17,17 +17,17 @@ import com.unit.triviaapp.ui.QuizScreen
 import com.unit.triviaapp.ui.states.QuizUiState
 import com.unit.triviaapp.ui.theme.TriviaAppTheme
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
 class QuizActivity: AppCompatActivity() {
-    private var currentQuestionIndex = 0
+    private var currentQuestionIndex by mutableIntStateOf(0)
     private var platform_id = -1
     private var isDailyQuiz = false
     private var selectedAnswers = hashMapOf<Int, Int>()
     private lateinit var questions: List<Question>
     private lateinit var quizConfig: QuizConfig
-
     private var quizUiState by mutableStateOf<QuizUiState>(
         QuizUiState.Loading
     )
@@ -39,6 +39,7 @@ class QuizActivity: AppCompatActivity() {
             TriviaAppTheme {
                 QuizScreen(
                     quizUiState,
+                    currentQuestionIndex,
                     onNextButtonClick = {
                         nextQuestion()
                     },
