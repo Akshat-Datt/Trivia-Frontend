@@ -74,6 +74,13 @@ fun QuizScreen(
                 }
 
                 is QuizUiState.Success -> {
+
+                    QuizProgressBar(
+                        currentQuestion = currentQuestionIndex + 1,
+                        totalQuestions = quizUiState.questions.size,
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                    )
+
                     QuestionCard(
                         question = quizUiState.questions[currentQuestionIndex].question_text,
                         modifier = Modifier.padding(horizontal = 24.dp)
@@ -260,6 +267,55 @@ fun AnswerOptions(
                     )
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun QuizProgressBar(
+    currentQuestion: Int,
+    totalQuestions: Int,
+    modifier: Modifier = Modifier
+) {
+    val progress = if (totalQuestions > 0) {
+        (currentQuestion.toFloat() / totalQuestions).coerceIn(0f, 1f)
+    } else {
+        0f
+    }
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Text(
+            text = "Question $currentQuestion of $totalQuestions",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            color = Color(0xFF6336E8)
+        )
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .clip(CircleShape)
+                .background(Color(0xFFE8D9FF))
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth(progress)
+                    .fillMaxHeight()
+                    .clip(CircleShape)
+                    .background(
+                        Brush.horizontalGradient(
+                            colors = listOf(
+                                Color(0xFF7436F5),
+                                Color(0xFFE45AAB),
+                                Color(0xFFFFA62B)
+                            )
+                        )
+                    )
+            )
         }
     }
 }
