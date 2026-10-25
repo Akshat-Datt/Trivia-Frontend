@@ -1,6 +1,5 @@
 package com.unit.triviaapp.ui
 
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import com.unit.triviaapp.enums.QuizMode
@@ -36,6 +35,7 @@ import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
 import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.draw.shadow
 
 @Composable
 fun QuizScreen(
@@ -88,6 +88,7 @@ fun QuizScreen(
                     var selectedIndex by remember {
                         mutableStateOf<Int?>(null)
                     }
+
                     AnswerOptions(
                         options = quizUiState.questions[currentQuestionIndex].options,
                         selectedIndex = selectedIndex,
@@ -98,10 +99,35 @@ fun QuizScreen(
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                     )
 
-                    Button(
-                        onClick = onNextButtonClick
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Next")
+                        NavigationButton(
+                            buttonName = "← Back",
+                            onClickAction = onBackButtonClick,
+                            modifier = Modifier.weight(1f),
+                            isPrimary = false
+                        )
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        NavigationButton(
+                            buttonName = "Next →",
+                            onClickAction = onNextButtonClick,
+                            modifier = Modifier.weight(1f),
+                            isPrimary = true
+                        )
+                    }
+
+                    if(quizUiState.quizMode == QuizMode.ENDLESS) {
+                        NavigationButton(
+                            buttonName = "SUBMIT",
+                            onClickAction = onEndlessSubmitButtonClick,
+                            modifier = Modifier.fillMaxWidth()
+                                .padding(24.dp, 12.dp),
+                            isPrimary = true
+                        )
                     }
                 }
 
@@ -317,5 +343,64 @@ fun QuizProgressBar(
                     )
             )
         }
+    }
+}
+
+@Composable
+fun NavigationButton(
+    buttonName: String,
+    onClickAction: () -> Unit,
+    modifier: Modifier = Modifier,
+    isPrimary: Boolean = true
+) {
+    Box(
+        modifier = modifier
+            .height(58.dp)
+            .shadow(
+                elevation = 6.dp,
+                shape = RoundedCornerShape(50)
+            )
+            .clip(RoundedCornerShape(50))
+            .background(
+                brush = if (isPrimary) {
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFF7436F5),
+                            Color(0xFFE45AAB),
+                            Color(0xFFFFA62B)
+                        )
+                    )
+                } else {
+                    Brush.horizontalGradient(
+                        colors = listOf(
+                            Color(0xFFFFF9F4),
+                            Color(0xFFFFF1E8)
+                        )
+                    )
+                }
+            )
+            .border(
+                width = 1.5.dp,
+                color = if (isPrimary) {
+                    Color(0xFFFFD4F2)
+                } else {
+                    Color(0xFFB784E8)
+                },
+                shape = RoundedCornerShape(50)
+            )
+            .clickable(onClick = onClickAction)
+            .padding(horizontal = 24.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = buttonName,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold,
+            color = if (isPrimary) {
+                Color.White
+            } else {
+                Color(0xFF5125B8)
+            }
+        )
     }
 }
