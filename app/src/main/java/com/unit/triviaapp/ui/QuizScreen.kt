@@ -23,6 +23,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateOf
@@ -42,7 +43,8 @@ fun QuizScreen(
     currentQuestionIndex: Int,
     onBackButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
-    onEndlessSubmitButtonClick: () -> Unit
+    onEndlessSubmitButtonClick: () -> Unit,
+    onAnswerSelected: (Int) -> Unit
 ){
     Box (
         modifier = Modifier.fillMaxSize()
@@ -60,9 +62,10 @@ fun QuizScreen(
         BackgroundElements()
 
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.fillMaxSize()
+                .padding(0.dp, 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
 
             when (quizUiState) {
@@ -83,8 +86,9 @@ fun QuizScreen(
                         selectedIndex = selectedIndex,
                         onOptionSelected = {index ->
                             selectedIndex = index
+                            onAnswerSelected(index)
                         },
-                        modifier = Modifier.padding(horizontal = 24.dp)
+                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                     )
 
                     Button(

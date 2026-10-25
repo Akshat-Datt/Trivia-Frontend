@@ -50,6 +50,9 @@ class QuizActivity: AppCompatActivity() {
                     },
                     onEndlessSubmitButtonClick = {
                         sendEndlessQuizAnswersToResultActivity()
+                    },
+                    onAnswerSelected = { index ->
+                        selectedAnswers[currentQuestionIndex] = index
                     }
                 )
             }
