@@ -7,7 +7,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Lightbulb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -100,7 +99,8 @@ fun QuizScreen(
                     )
 
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth()
+                            .padding(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         NavigationButton(
@@ -168,24 +168,6 @@ fun QuestionCard(
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // Decorative lightbulb icon
-            Box(
-                modifier = Modifier
-                    .size(76.dp)
-                    .background(
-                        color = Color(0xFFE5D5FF),
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Lightbulb,
-                    contentDescription = null,
-                    tint = Color(0xFF6336E8),
-                    modifier = Modifier.size(40.dp)
-                )
-            }
-
             Text(
                 text = question,
                 style = MaterialTheme.typography.headlineSmall,

@@ -52,7 +52,7 @@ class QuizActivity: AppCompatActivity() {
                         sendEndlessQuizAnswersToResultActivity()
                     },
                     onAnswerSelected = { index ->
-                        selectedAnswers[currentQuestionIndex] = index
+                        selectedAnswers[questions[currentQuestionIndex].id] = index
                     }
                 )
             }
@@ -144,7 +144,7 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun sendDailyQuizAnswersToResultActivity(){
-        Log.d("Trivia","send questions called")
+        Log.d("@@@","send questions called")
 
         val submitQuiz = SubmitQuizRequest(
             quiz_mode = QuizMode.DAILY,
@@ -158,7 +158,7 @@ class QuizActivity: AppCompatActivity() {
     }
 
     private fun sendEndlessQuizAnswersToResultActivity(){
-        Log.d("Trivia","send questions called")
+        Log.d("Trivia","@@@endless send questions called with ${selectedAnswers}")
 
         val submitQuiz = SubmitQuizRequest(
             quiz_mode = QuizMode.ENDLESS,

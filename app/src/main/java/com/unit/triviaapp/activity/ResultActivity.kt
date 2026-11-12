@@ -63,6 +63,7 @@ class ResultActivity: AppCompatActivity() {
             submission,
             onSuccess = { quizResultResponse ->
                 if(quizResultResponse != null) {
+                    Log.d("@@@", "${quizResultResponse.score}")
                     resultUiState = ResultUiState.Success(
                         quizScoreResponse = quizResultResponse
                     )
