@@ -18,6 +18,7 @@ import com.unit.triviaapp.ui.states.QuizUiState
 import com.unit.triviaapp.ui.theme.TriviaAppTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 
@@ -25,7 +26,7 @@ class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex by mutableIntStateOf(0)
     private var platform_id = -1
     private var isDailyQuiz = false
-    private var selectedAnswers = hashMapOf<Int, Int>()
+    private var selectedAnswers = mutableStateMapOf<Int, Int>()
     private lateinit var questions: List<Question>
     private lateinit var quizConfig: QuizConfig
     private var quizUiState by mutableStateOf<QuizUiState>(
@@ -40,6 +41,7 @@ class QuizActivity: AppCompatActivity() {
                 QuizScreen(
                     quizUiState,
                     currentQuestionIndex,
+                    selectedAnswers,
                     onNextButtonClick = {
                         nextQuestion()
                     },
@@ -51,8 +53,8 @@ class QuizActivity: AppCompatActivity() {
                     onEndlessSubmitButtonClick = {
                         sendEndlessQuizAnswersToResultActivity()
                     },
-                    onAnswerSelected = { index ->
-                        selectedAnswers[questions[currentQuestionIndex].id] = index
+                    onAnswerSelected = { questionId, index ->
+                        selectedAnswers[questionId] = index
                     }
                 )
             }
@@ -149,7 +151,7 @@ class QuizActivity: AppCompatActivity() {
         val submitQuiz = SubmitQuizRequest(
             quiz_mode = QuizMode.DAILY,
             platform_id = null,
-            answers = selectedAnswers
+            answers = HashMap(selectedAnswers)
         )
 
         val intent = Intent(this, ResultActivity::class.java)
@@ -163,7 +165,7 @@ class QuizActivity: AppCompatActivity() {
         val submitQuiz = SubmitQuizRequest(
             quiz_mode = QuizMode.ENDLESS,
             platform_id = platform_id,
-            answers = selectedAnswers
+            answers = HashMap(selectedAnswers)
         )
 
         val intent = Intent(this, ResultActivity::class.java)

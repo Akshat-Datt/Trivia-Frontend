@@ -24,7 +24,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -32,18 +32,17 @@ import com.unit.triviaapp.ui.states.QuizUiState
 import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
 import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
 import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.draw.shadow
 
 @Composable
 fun QuizScreen(
     quizUiState: QuizUiState,
     currentQuestionIndex: Int,
+    selectedAnswers: Map<Int, Int>,
     onBackButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
     onEndlessSubmitButtonClick: () -> Unit,
-    onAnswerSelected: (Int) -> Unit
+    onAnswerSelected: (Int, Int) -> Unit
 ){
     Box (
         modifier = Modifier.fillMaxSize()
@@ -84,16 +83,14 @@ fun QuizScreen(
                         question = quizUiState.questions[currentQuestionIndex].question_text,
                         modifier = Modifier.padding(horizontal = 24.dp)
                     )
-                    var selectedIndex by remember {
-                        mutableStateOf<Int?>(null)
-                    }
+
+                    val questionId = quizUiState.questions[currentQuestionIndex].id
 
                     AnswerOptions(
                         options = quizUiState.questions[currentQuestionIndex].options,
-                        selectedIndex = selectedIndex,
-                        onOptionSelected = {index ->
-                            selectedIndex = index
-                            onAnswerSelected(index)
+                        selectedIndex = selectedAnswers[questionId],
+                        onOptionSelected = { index ->
+                            onAnswerSelected(questionId, index)
                         },
                         modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                     )
