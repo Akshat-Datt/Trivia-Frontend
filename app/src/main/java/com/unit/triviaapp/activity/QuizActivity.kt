@@ -88,7 +88,6 @@ class QuizActivity: AppCompatActivity() {
         QuizApiManager.getDailyQuestionsList(
             onSuccess = {dailyQuestions ->
                 if(dailyQuestions != null){
-                    Log.d("Trivia", "@@@Daily Questions are $questions calling populate questions now")
                     questions = dailyQuestions
                     quizUiState = QuizUiState.Success(
                         quizMode = QuizMode.DAILY,

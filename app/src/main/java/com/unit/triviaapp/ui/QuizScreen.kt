@@ -24,8 +24,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import com.unit.triviaapp.ui.states.QuizUiState
@@ -100,19 +98,28 @@ fun QuizScreen(
                             .padding(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        NavigationButton(
-                            buttonName = "← Back",
-                            onClickAction = onBackButtonClick,
-                            modifier = Modifier.weight(1f),
-                            isPrimary = false
-                        )
+                        if(quizUiState.quizMode == QuizMode.ENDLESS) {
+                            NavigationButton(
+                                buttonName = "← Back",
+                                onClickAction = onBackButtonClick,
+                                modifier = Modifier.weight(1f),
+                                isPrimary = false
+                            )
+                        }
 
                         Spacer(modifier = Modifier.width(16.dp))
 
+                        var isVisible = true
+                        if(quizUiState.quizMode == QuizMode.ENDLESS && quizUiState.questions.size -1 == currentQuestionIndex) isVisible = false
+
+                        var nextButtonName = "Next →"
+                        if(quizUiState.quizMode == QuizMode.DAILY && quizUiState.questions.size -1 == currentQuestionIndex) nextButtonName = "SUBMIT"
+
                         NavigationButton(
-                            buttonName = "Next →",
+                            buttonName = nextButtonName,
                             onClickAction = onNextButtonClick,
-                            modifier = Modifier.weight(1f),
+                            modifier = Modifier.weight(1f)
+                                .visible(isVisible),
                             isPrimary = true
                         )
                     }
