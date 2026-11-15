@@ -1,0 +1,329 @@
+package com.unit.triviaapp.ui
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.runtime.Composable
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.unit.dp
+import androidx.compose.material3.Text
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import com.unit.triviaapp.R
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AllInclusive
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.ui.unit.sp
+import com.unit.triviaapp.ui.theme.TriviaAccent
+import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
+import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
+import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
+import com.unit.triviaapp.ui.theme.TriviaCardGold
+import com.unit.triviaapp.ui.theme.TriviaCardGoldIcon
+import com.unit.triviaapp.ui.theme.TriviaCardLavender
+import com.unit.triviaapp.ui.theme.TriviaCardLavenderIcon
+import com.unit.triviaapp.ui.theme.TriviaPink
+import com.unit.triviaapp.ui.theme.TriviaPrimary
+import com.unit.triviaapp.ui.theme.TriviaTextSecondary
+
+private val ScreenHorizontalPadding = 24.dp
+private val SectionSpacing = 32.dp
+private val ElementSpacing = 12.dp
+
+@Composable
+fun HomeScreen(
+    onDailyQuizClick: () -> Unit,
+    onEndlessQuizClick: () -> Unit,
+){
+    Box (
+        modifier = Modifier.fillMaxSize()
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(
+                        TriviaBackgroundTop,
+                        TriviaBackgroundMiddle,
+                        TriviaBackgroundBottom
+                    )
+                )
+            )
+
+    ) {
+        BackgroundElements()
+
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Image(
+                painter = painterResource(R.drawable.trivia_icon),
+                contentDescription = "Trivia Challenge logo",
+                modifier = Modifier.size(150.dp)
+            )
+
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(ElementSpacing)
+            ) {
+                Text(
+                    text = "Trivia Challenge",
+                    style = MaterialTheme.typography.headlineLarge.copy(
+                        brush = Brush.horizontalGradient(
+                            colors = listOf(
+                                TriviaPrimary,
+                                TriviaPink,
+                                TriviaAccent
+                            )
+                        )
+                    )
+                )
+
+                Text(
+                    text = "Test your knowledge against the clock",
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        fontSize = 15.sp
+                    ),
+                    color = TriviaTextSecondary
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(SectionSpacing)
+            )
+
+            Row(
+                modifier = Modifier.fillMaxWidth()
+                    .height(180.dp)
+                    .padding(horizontal = ScreenHorizontalPadding),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                FeatureItem(
+                    R.drawable.bolt_icon,
+                    "Timed Questions",
+                    TriviaCardLavender,
+TriviaCardLavenderIcon,
+                    modifier = Modifier.weight(1f)
+                )
+
+                FeatureItem(
+                    R.drawable.trophy_icon,
+                    "Challenge Yourself",
+                    TriviaCardGold,
+                    TriviaCardGoldIcon,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(
+                modifier = Modifier.height(SectionSpacing)
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(ElementSpacing)
+            ) {
+                DailyQuizModeButton(
+                    "Daily Quiz",
+                    onClick = onDailyQuizClick,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = ScreenHorizontalPadding)
+                )
+
+                EndlessQuizButton(
+                    "Endless Quiz",
+                    onClick = onEndlessQuizClick,
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(horizontal = ScreenHorizontalPadding)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FeatureItem(
+    imageRes: Int,
+    title: String,
+    containerColor: Color,
+    iconContainerColor: Color,
+    modifier: Modifier = Modifier
+){
+    Card (
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large,
+        colors = CardDefaults.cardColors(
+            containerColor = containerColor
+        ),
+        elevation = CardDefaults.cardElevation(
+            defaultElevation = 3.dp
+        )
+    ){
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(
+                horizontal = 16.dp,
+                vertical = 20.dp
+            ),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            Surface(
+                modifier = Modifier.size(75.dp),
+                shape = CircleShape,
+                color = iconContainerColor
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center
+                ){
+                    Image(
+                        painter = painterResource(imageRes),
+                        contentDescription = null,
+                        modifier = Modifier.size(60.dp)
+                    )
+                }
+            }
+
+            Spacer(
+                modifier = Modifier.height(10.dp)
+            )
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+        }
+    }
+}
+
+@Composable
+fun DailyQuizModeButton(
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier
+){
+    Surface(
+        onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large,
+        color = Color.Transparent,
+    ) {
+        Box(
+            modifier = Modifier
+                .background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(
+                            TriviaPrimary,
+                            TriviaPink,
+                            TriviaAccent
+                        )
+                    )
+                )
+                .padding(16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+
+                Text(
+                    text = title,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White
+                )
+
+                Spacer(
+                    modifier = Modifier.weight(1f)
+                )
+
+                Icon(
+                    imageVector = Icons.Default.ChevronRight,
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun EndlessQuizButton(
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier
+){
+    OutlinedButton(
+        onClick = onClick,
+        modifier = modifier,
+        shape = MaterialTheme.shapes.large,
+        border = BorderStroke(
+            width = 1.5.dp,
+            color = TriviaPrimary
+        )
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.AllInclusive,
+                contentDescription = null,
+                tint = TriviaPrimary
+            )
+
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = TriviaPrimary
+            )
+
+            Spacer(
+                modifier = Modifier.weight(1f)
+            )
+
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = null,
+                tint = TriviaPrimary
+            )
+        }
+    }
+}
