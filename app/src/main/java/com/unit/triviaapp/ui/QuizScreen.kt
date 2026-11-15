@@ -23,7 +23,9 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.remember
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import com.unit.triviaapp.ui.states.QuizUiState
@@ -31,19 +33,24 @@ import com.unit.triviaapp.ui.theme.TriviaBackgroundBottom
 import com.unit.triviaapp.ui.theme.TriviaBackgroundMiddle
 import com.unit.triviaapp.ui.theme.TriviaBackgroundTop
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.platform.LocalConfiguration
+import com.unit.triviaapp.ui.theme.TriviaPrimary
+import java.util.Locale
 
 @Composable
 fun QuizScreen(
     quizUiState: QuizUiState,
     currentQuestionIndex: Int,
     selectedAnswers: Map<Int, Int>,
+    remainingSeconds: Long,
     onBackButtonClick: () -> Unit,
     onNextButtonClick: () -> Unit,
     onEndlessSubmitButtonClick: () -> Unit,
     onAnswerSelected: (Int, Int) -> Unit
 ){
     Box (
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
@@ -58,7 +65,8 @@ fun QuizScreen(
         BackgroundElements()
 
         Column(
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
                 .padding(0.dp, 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
@@ -71,11 +79,35 @@ fun QuizScreen(
 
                 is QuizUiState.Success -> {
 
-                    QuizProgressBar(
-                        currentQuestion = currentQuestionIndex + 1,
-                        totalQuestions = quizUiState.questions.size,
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                    )
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = "Question ${currentQuestionIndex + 1} of ${quizUiState.questions.size}",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF6336E8)
+                            )
+
+                            if(quizUiState.quizMode == QuizMode.DAILY)
+                            TimerDisplay(
+                                remainingSeconds = remainingSeconds.toInt()
+                            )
+                        }
+                        QuizProgressBar(
+                            currentQuestion = currentQuestionIndex + 1,
+                            totalQuestions = quizUiState.questions.size,
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                        )
+                    }
 
                     QuestionCard(
                         question = quizUiState.questions[currentQuestionIndex].question_text,
@@ -94,7 +126,8 @@ fun QuizScreen(
                     )
 
                     Row(
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .padding(horizontal = 24.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
@@ -118,7 +151,8 @@ fun QuizScreen(
                         NavigationButton(
                             buttonName = nextButtonName,
                             onClickAction = onNextButtonClick,
-                            modifier = Modifier.weight(1f)
+                            modifier = Modifier
+                                .weight(1f)
                                 .visible(isVisible),
                             isPrimary = true
                         )
@@ -128,7 +162,8 @@ fun QuizScreen(
                         NavigationButton(
                             buttonName = "SUBMIT",
                             onClickAction = onEndlessSubmitButtonClick,
-                            modifier = Modifier.fillMaxWidth()
+                            modifier = Modifier
+                                .fillMaxWidth()
                                 .padding(24.dp, 12.dp),
                             isPrimary = true
                         )
@@ -299,12 +334,6 @@ fun QuizProgressBar(
         modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(
-            text = "Question $currentQuestion of $totalQuestions",
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = Color(0xFF6336E8)
-        )
 
         Box(
             modifier = Modifier
@@ -387,6 +416,44 @@ fun NavigationButton(
             } else {
                 Color(0xFF5125B8)
             }
+        )
+    }
+}
+
+@Composable
+fun TimerDisplay(
+    remainingSeconds: Int,
+    modifier: Modifier = Modifier
+) {
+    val configuration = LocalConfiguration.current
+
+    val locale = remember (configuration) {
+        Locale.getDefault()
+    }
+
+    val formattedTime = String.format(
+        locale,
+        "%02d:%02d",
+        remainingSeconds / 60,
+        remainingSeconds % 60
+    )
+
+    Row(
+        modifier = modifier,
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Default.Timer,
+            contentDescription = "Time remaining",
+            tint = TriviaPrimary
+        )
+
+        Text(
+            text = formattedTime,
+            fontWeight = FontWeight.Bold,
+            color = TriviaPrimary,
+            fontSize = 18.sp
         )
     }
 }

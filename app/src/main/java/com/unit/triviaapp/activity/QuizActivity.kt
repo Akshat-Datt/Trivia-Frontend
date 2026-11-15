@@ -18,20 +18,25 @@ import com.unit.triviaapp.ui.states.QuizUiState
 import com.unit.triviaapp.ui.theme.TriviaAppTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.unit.triviaapp.utils.QuestionTimer
 
 class QuizActivity: AppCompatActivity() {
     private var currentQuestionIndex by mutableIntStateOf(0)
     private var platform_id = -1
     private var isDailyQuiz = false
+    private val dailyQuizTimerValue = 15000L
+    private val questionTimer = QuestionTimer()
     private var selectedAnswers = mutableStateMapOf<Int, Int>()
     private lateinit var questions: List<Question>
     private lateinit var quizConfig: QuizConfig
     private var quizUiState by mutableStateOf<QuizUiState>(
         QuizUiState.Loading
     )
+    private var remainingSeconds by mutableLongStateOf(15L)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +47,7 @@ class QuizActivity: AppCompatActivity() {
                     quizUiState,
                     currentQuestionIndex,
                     selectedAnswers,
+                    remainingSeconds,
                     onNextButtonClick = {
                         nextQuestion()
                     },
@@ -93,6 +99,7 @@ class QuizActivity: AppCompatActivity() {
                         quizMode = QuizMode.DAILY,
                         questions = dailyQuestions
                     )
+                    operateTimer()
                 }
             },
             onError = {error ->
@@ -135,17 +142,21 @@ class QuizActivity: AppCompatActivity() {
     private fun nextQuestion(){
         if (currentQuestionIndex == questions.size - 1) {
             if (isDailyQuiz) {
+                questionTimer.cancelTimer()
                 sendDailyQuizAnswersToResultActivity()
             }
         }
 
         if (currentQuestionIndex < questions.size - 1) {
             currentQuestionIndex++
+            if(isDailyQuiz){
+                operateTimer()
+            }
         }
     }
 
     private fun sendDailyQuizAnswersToResultActivity(){
-        Log.d("@@@","send questions called")
+        Log.d("@@@","send questions called ${selectedAnswers}")
 
         val submitQuiz = SubmitQuizRequest(
             quiz_mode = QuizMode.DAILY,
@@ -170,5 +181,19 @@ class QuizActivity: AppCompatActivity() {
         val intent = Intent(this, ResultActivity::class.java)
         intent.putExtra(ConstKeys.ANSWERS, submitQuiz)
         startActivity(intent)
+    }
+
+    private fun operateTimer(){
+        questionTimer.startTimer(
+            dailyQuizTimerValue,
+            onTick = { seconds ->
+                remainingSeconds = seconds
+            },
+            onFinish = {
+                if(selectedAnswers[questions[currentQuestionIndex].id] == null) selectedAnswers[questions[currentQuestionIndex].id] = -1
+                questionTimer.cancelTimer()
+                nextQuestion()
+            }
+        )
     }
 }

@@ -215,7 +215,7 @@ fun ResultSuccessContent(
                                 color = Color(0xFF51321F)
                             )
                         }
-                        else{
+                        else if(totalQuestions > 0 && (score < totalQuestions && score >= totalQuestions/2)){
                             Text(
                                 text = "💪",
                                 fontSize = 36.sp
@@ -223,6 +223,14 @@ fun ResultSuccessContent(
 
                             Text(
                                 text = "Nice Work! Keep Going",
+                                fontSize = 22.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF51321F)
+                            )
+                        }
+                        else{
+                            Text(
+                                text = "Try Again!",
                                 fontSize = 22.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = Color(0xFF51321F)

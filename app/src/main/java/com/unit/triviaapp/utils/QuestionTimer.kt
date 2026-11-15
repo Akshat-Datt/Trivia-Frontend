@@ -10,6 +10,7 @@ class QuestionTimer(){
                    onTick: (Long) -> Unit,
                    onFinish: () -> Unit
     ){
+        countDown?.cancel()
         countDown = object : CountDownTimer(remainingTime, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 runningTime = millisUntilFinished/1000
